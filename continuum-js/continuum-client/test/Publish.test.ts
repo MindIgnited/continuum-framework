@@ -8,7 +8,7 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest"
 import { ConnectedInfo, Continuum, Event, EventConstants, IEvent } from "../src"
 import { TestServiceNoScope } from "./TestServiceNoScope"
 import { TestServiceWithScope } from "./TestServiceWithScope"
-import { initContinuumGateway, logFailure, validateConnectedInfo } from "./TestHelper"
+import { createConnectionInfo, logFailure, validateConnectedInfo } from "./TestHelper"
 import { firstValueFrom, Observable } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
 
@@ -18,7 +18,7 @@ describe("Publish Mechanism", () => {
     let replyToId: string
 
     beforeAll(async () => {
-        const { connectionInfo } = await initContinuumGateway()
+        const connectionInfo = createConnectionInfo()
         const connectedInfo: ConnectedInfo = await logFailure(
             Continuum.connect(connectionInfo),
             "Failed to connect to Continuum Gateway"

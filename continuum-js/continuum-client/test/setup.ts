@@ -27,7 +27,7 @@ export async function setup(project: TestProject) {
         // @ts-ignore
         project.provide('CONTINUUM_PORT', container.getMappedPort(58503))
 
-        console.log('Continuum Gateway started.')
+        console.log(`Continuum Gateway started at ${container.getHost()}:${container.getMappedPort(58503)} `)
     }else{
         // @ts-ignore
         project.provide('CONTINUUM_HOST', '127.0.0.1')

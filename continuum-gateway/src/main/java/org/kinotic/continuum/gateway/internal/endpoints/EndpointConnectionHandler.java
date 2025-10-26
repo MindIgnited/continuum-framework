@@ -129,7 +129,7 @@ public class EndpointConnectionHandler {
     }
 
     public void removeSession() {
-        // There will not be a session if authentication was not successful
+        // There will not be a session if authentication was not successful, or disableStickySession was requested
         if (session != null) {
             // We remove the session timer here so the timer does not fire after the session is removed
             if (sessionTimer != -1) {
@@ -160,7 +160,6 @@ public class EndpointConnectionHandler {
 
                     // FIXME: when the invocation is local this happens for no reason. If the event stays on the local bus we shouldn't do this..
                     incomingEvent.metadata().put(EventConstants.SENDER_HEADER, services.objectMapper.writeValueAsString(session.participant()));
-
 
                     // make sure reply-to if present is scoped to sender
                     // FIXME: a reply should not need a reply, therefore a replyCri probably should not be a EventConstants.SERVICE_DESTINATION_PREFIX

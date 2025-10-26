@@ -3,7 +3,7 @@ import {WebSocket} from 'ws'
 import {ConnectedInfo, Continuum} from '../src'
 import {NON_EXISTENT_SERVICE} from './INonExistentService'
 import {TEST_SERVICE} from './ITestService'
-import {initContinuumGateway, logFailure, validateConnectedInfo} from './TestHelper'
+import {createConnectionInfo, logFailure, validateConnectedInfo} from './TestHelper'
 
 // This is required when running Continuum from node
 Object.assign(global, { WebSocket})
@@ -11,7 +11,7 @@ Object.assign(global, { WebSocket})
 describe('Continuum RPC Tests', () => {
 
     beforeAll(async () => {
-        const {connectionInfo} = await initContinuumGateway()
+        const connectionInfo =  createConnectionInfo()
         let connectedInfo: ConnectedInfo = await logFailure(Continuum.connect(connectionInfo), 'Failed to connect to Continuum Gateway')
         validateConnectedInfo(connectedInfo)
     }, 1000 * 60 * 10) // 10 minutes

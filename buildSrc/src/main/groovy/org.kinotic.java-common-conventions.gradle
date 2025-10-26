@@ -30,9 +30,6 @@ dependencyManagement {
         mavenBom "io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:${otelInstrumentationBomVersion}"
     }
     dependencies {
-        dependency "ch.qos.logback:logback-core:${logbackVersion}"
-        dependency "ch.qos.logback:logback-classic:${logbackVersion}"
-
         dependency "commons-io:commons-io:${commonsIoVersion}"
 
         dependency "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"

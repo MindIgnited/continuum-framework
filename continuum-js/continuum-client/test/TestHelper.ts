@@ -1,4 +1,4 @@
-import { ConnectedInfo, ConnectionInfo } from '../src'
+import {ConnectedInfo, ConnectHeaders, ConnectionInfo} from '../src'
 import { expect, inject } from 'vitest'
 
 /**
@@ -28,17 +28,15 @@ export function validateConnectedInfo(connectedInfo: ConnectedInfo, roles?: stri
     }
 }
 
-export async function initContinuumGateway(disableStickySession: boolean = false): Promise<{connectionInfo: ConnectionInfo}> {
+export function createConnectionInfo(disableStickySession: boolean = false,
+                                           connectHeaders?: ConnectHeaders | (() => Promise<ConnectHeaders>)): ConnectionInfo {
     const connectionInfo = new ConnectionInfo()
     // @ts-ignore
     connectionInfo.host = inject('CONTINUUM_HOST')
     // @ts-ignore
     connectionInfo.port = inject('CONTINUUM_PORT')
     connectionInfo.maxConnectionAttempts = 3
-    connectionInfo.connectHeaders = { login: 'guest', passcode: 'guest' }
+    connectionInfo.connectHeaders = connectHeaders || { login: 'guest', passcode: 'guest' }
     connectionInfo.disableStickySession = disableStickySession
-    console.log(`Continuum Gateway running at ${connectionInfo.host}:${connectionInfo.port}`)
-    return {
-        connectionInfo
-    }
+    return connectionInfo
 }

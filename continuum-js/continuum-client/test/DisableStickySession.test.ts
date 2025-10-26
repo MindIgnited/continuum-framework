@@ -2,7 +2,7 @@ import {afterAll, beforeAll, describe, expect, it} from 'vitest'
 import {WebSocket} from 'ws'
 import {ConnectedInfo, Continuum, ConnectionInfo, ContinuumSingleton} from '../src'
 import {TEST_SERVICE} from './ITestService'
-import { initContinuumGateway, logFailure, validateConnectedInfo } from './TestHelper'
+import { createConnectionInfo, logFailure, validateConnectedInfo } from './TestHelper'
 
 // This is required when running Continuum from node
 Object.assign(global, { WebSocket})
@@ -12,12 +12,12 @@ describe('Disable Sticky Session Tests', () => {
 
     beforeAll(async () => {
         console.log('Starting Continuum Gateway for sticky session test')
-        
-        connectionInfo = (await initContinuumGateway(true)).connectionInfo
+
+        connectionInfo = createConnectionInfo(true)
     }, 1000 * 60 * 10) // 10 minutes
 
     afterAll(async () => {
-        
+
     })
 
     it('should connect with disableStickySession and hard disconnect and reconnect', {"timeout": 1000 * 60 * 2}, async () => {
@@ -42,12 +42,12 @@ describe('Disable Sticky Session Tests', () => {
         // First connection and RPC call
         let connectedInfo: ConnectedInfo = await logFailure(Continuum.connect(connectionInfo),
                                                             'Failed to connect to Continuum Gateway')
-        
+
         validateConnectedInfo(connectedInfo)
-        
+
         const firstResult = await TEST_SERVICE.testMethodWithString("FirstCall")
         expect(firstResult).toBe("Hello FirstCall")
-        
+
         await expect(Continuum.disconnect()).resolves.toBeUndefined()
     })
 
