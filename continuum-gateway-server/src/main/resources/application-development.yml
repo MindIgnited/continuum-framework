@@ -2,6 +2,7 @@
 continuum:
   debug: true
   maxNumberOfCoresToUse: 4
+  disableClustering: false
   cluster:
     discoveryType: SHAREDFS
     sharedFsPath: /tmp/structures-sharedfs

@@ -1,8 +1,8 @@
   # YAML Reference http://www.yaml.org/refcard.html
   continuum:
     debug: true
+    disableClustering: false
     cluster:
-      disableClustering: false
       discoveryType: LOCAL
       joinTimeoutMs: 0
       discoveryPort: 47500

@@ -45,6 +45,7 @@ public class DefaultContinuumProperties implements ContinuumProperties {
     public static long DEFAULT_SESSION_TIMEOUT = 1000 * 60 * 30;
 
     private boolean debug = false;
+    private boolean disableClustering = false;
     private int eventBusClusterPort = 0;
     private int eventBusClusterPublicPort = -1;
     private String eventBusClusterHost = null;
