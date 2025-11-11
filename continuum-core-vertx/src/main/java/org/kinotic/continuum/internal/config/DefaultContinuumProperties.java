@@ -68,6 +68,7 @@ public class DefaultContinuumProperties implements ContinuumProperties {
     public String toString() {
         ToStringBuilder sb = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                                     .append("debug", debug)
+                                    .append("disableClustering", disableClustering)
                                     .append("sessionTimeout", sessionTimeout)
                                     .append("maxOffHeapMemory", maxOffHeapMemory);
 

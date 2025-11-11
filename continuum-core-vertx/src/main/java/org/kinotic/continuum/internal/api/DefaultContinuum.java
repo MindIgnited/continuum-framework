@@ -192,7 +192,7 @@ public class DefaultContinuum implements Continuum {
         }
         info.append("\n\n");
         info.append(continuumProperties.toString());
-        info.append("\n\n\tIgnite Cluster Properties:");
+        info.append("\n\nIgnite Cluster Properties:");
         info.append(igniteClusterProperties.toString());
 
         log.info(info.toString());

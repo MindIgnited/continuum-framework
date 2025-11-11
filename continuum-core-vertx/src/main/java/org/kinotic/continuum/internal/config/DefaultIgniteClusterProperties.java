@@ -31,7 +31,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DefaultIgniteClusterProperties implements IgniteClusterProperties {
 
-    private boolean disableClustering = false;
     private IgniteClusterDiscoveryType discoveryType = IgniteClusterDiscoveryType.LOCAL;
     private Long joinTimeoutMs = TcpDiscoverySpi.DFLT_JOIN_TIMEOUT; // 0 seconds (no timeout)
     private Integer discoveryPort = TcpDiscoverySpi.DFLT_PORT;
@@ -47,10 +46,9 @@ public class DefaultIgniteClusterProperties implements IgniteClusterProperties {
     @Override
     public String toString() {
         ToStringBuilder sb = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                                    .append("disableClustering", disableClustering)
                                     .append("discoveryType", discoveryType);
 
-        if(!disableClustering && discoveryType != IgniteClusterDiscoveryType.LOCAL){
+        if(discoveryType != IgniteClusterDiscoveryType.LOCAL){
 
             sb.append("joinTimeoutMs", joinTimeoutMs)
               .append("discoveryPort", discoveryPort)
