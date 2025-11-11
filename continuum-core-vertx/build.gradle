@@ -22,6 +22,7 @@ dependencies {
     implementation 'io.vertx:vertx-ignite'
     implementation 'org.apache.ignite:ignite-core'
     implementation 'org.apache.ignite:ignite-calcite'
+	implementation 'org.apache.ignite:ignite-kubernetes' // support for kubernetes discovery
     implementation 'org.apache.ignite:ignite-spring'
     implementation 'org.apache.ignite:ignite-slf4j'
     implementation 'javax.cache:cache-api'

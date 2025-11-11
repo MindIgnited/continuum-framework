@@ -40,6 +40,7 @@ import org.kinotic.continuum.api.ServerInfo;
 import org.kinotic.continuum.api.annotations.ContinuumPackages;
 import org.kinotic.continuum.api.annotations.EnableContinuum;
 import org.kinotic.continuum.api.config.ContinuumProperties;
+import org.kinotic.continuum.api.config.IgniteClusterProperties;
 import org.kinotic.continuum.internal.utils.ContinuumUtil;
 import org.kinotic.continuum.internal.utils.MetaUtil;
 import org.slf4j.Logger;
@@ -74,6 +75,7 @@ public class DefaultContinuum implements Continuum {
     private static final Logger log = LoggerFactory.getLogger(DefaultContinuum.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy HH:mm:ss z");
     private final ContinuumProperties continuumProperties;
+    private final IgniteClusterProperties igniteClusterProperties;
     private final ServerInfo serverInfo;
     private final Vertx vertx;
     private String applicationName;
@@ -85,6 +87,7 @@ public class DefaultContinuum implements Continuum {
                             Vertx vertx,
                             ApplicationContext applicationContext,
                             ContinuumProperties continuumProperties,
+                            IgniteClusterProperties igniteClusterProperties,
                             ReactiveAdapterRegistry reactiveAdapterRegistry) throws IOException {
         String nodeName;
 
@@ -104,6 +107,7 @@ public class DefaultContinuum implements Continuum {
         }
         this.vertx = vertx;
         this.continuumProperties = continuumProperties;
+        this.igniteClusterProperties = igniteClusterProperties;
         String nodeId = (clusterManager != null  ?  clusterManager.getNodeId() : UUID.randomUUID().toString());
         this.serverInfo = new ServerInfo(nodeId, nodeName);
 
@@ -188,6 +192,8 @@ public class DefaultContinuum implements Continuum {
         }
         info.append("\n\n");
         info.append(continuumProperties.toString());
+        info.append("\n\n\tIgnite Cluster Properties:");
+        info.append(igniteClusterProperties.toString());
 
         log.info(info.toString());
     }

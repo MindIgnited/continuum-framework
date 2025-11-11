@@ -3,7 +3,14 @@
     dataDir: /media/continuum/data/gateway
 
   continuum:
-    discovery: zookeeper
     debug: false
     eventBusClusterPort: 57100
+    cluster:
+      discoveryType: KUBERNETES
+      joinTimeoutMs: 0
+      discoveryPort: 47500
+      communicationPort: 47501
+      kubernetesNamespace: default
+      kubernetesServiceName: structures
+      kubernetesIncludeNotReadyAddresses: false
 

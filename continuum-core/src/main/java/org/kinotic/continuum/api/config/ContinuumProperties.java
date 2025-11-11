@@ -37,11 +37,6 @@ public interface ContinuumProperties {
     boolean isDebug();
 
     /**
-     * @return true if clustering should be disabled false if not
-     */
-    boolean isDisableClustering();
-
-    /**
      * @return the port to use when clustering = 0 (meaning assign a random port)
      */
     int getEventBusClusterPort();
