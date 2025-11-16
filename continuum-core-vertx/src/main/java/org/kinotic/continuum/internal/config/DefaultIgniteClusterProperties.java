@@ -48,22 +48,20 @@ public class DefaultIgniteClusterProperties implements IgniteClusterProperties {
     @Override
     public String toString() {
         ToStringBuilder sb = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                                    .append("discoveryType", discoveryType);
+                                    .append("discoveryType", discoveryType)
+                                    .append("localAddress", localAddress)
+                                    .append("joinTimeoutMs", joinTimeoutMs)
+                                    .append("discoveryPort", discoveryPort)
+                                    .append("communicationPort", communicationPort);
 
-        if(discoveryType != IgniteClusterDiscoveryType.LOCAL){
-
-            sb.append("joinTimeoutMs", joinTimeoutMs)
-              .append("discoveryPort", discoveryPort)
-              .append("communicationPort", communicationPort);
-
-            if (discoveryType == IgniteClusterDiscoveryType.SHAREDFS) {
-                sb.append("sharedFsPath", sharedFsPath);
-            }else if (discoveryType == IgniteClusterDiscoveryType.KUBERNETES) {
-                sb.append("kubernetesNamespace", kubernetesNamespace)
-                  .append("kubernetesServiceName", kubernetesServiceName)
-                  .append("kubernetesIncludeNotReadyAddresses", kubernetesIncludeNotReadyAddresses);
-            }
-
+        if (discoveryType == IgniteClusterDiscoveryType.SHAREDFS) {
+            sb.append("sharedFsPath", sharedFsPath);
+        }else if (discoveryType == IgniteClusterDiscoveryType.KUBERNETES) {
+            sb.append("kubernetesNamespace", kubernetesNamespace)
+              .append("kubernetesServiceName", kubernetesServiceName)
+              .append("kubernetesIncludeNotReadyAddresses", kubernetesIncludeNotReadyAddresses);
+        }else if (discoveryType == IgniteClusterDiscoveryType.LOCAL) {
+            sb.append("localAddresses", localAddresses);
         }
 
         return sb.toString();
