@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ignite.IgniteSystemProperties;
 import org.apache.ignite.calcite.CalciteQueryEngineConfiguration;
 import org.apache.ignite.configuration.CacheConfiguration;
@@ -221,7 +222,12 @@ public class ContinuumIgniteConfig {
         log.info("Configuring LOCAL discovery (single-node mode)");
 
         TcpDiscoveryVmIpFinder ipFinder = new TcpDiscoveryVmIpFinder();
-        ipFinder.setAddresses(List.of("127.0.0.1:" + igniteClusterProperties.getDiscoveryPort()));
+        if(igniteClusterProperties.getLocalAddresses() != null
+                && StringUtils.isNotBlank(igniteClusterProperties.getLocalAddresses())){
+            ipFinder.setAddresses(List.of(igniteClusterProperties.getLocalAddresses()));
+        } else {
+            ipFinder.setAddresses(List.of("127.0.0.1:" + igniteClusterProperties.getDiscoveryPort()));
+        }
 
         return ipFinder;
     }

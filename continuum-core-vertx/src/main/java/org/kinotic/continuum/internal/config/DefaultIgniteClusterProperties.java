@@ -35,6 +35,7 @@ public class DefaultIgniteClusterProperties implements IgniteClusterProperties {
     private Long joinTimeoutMs = TcpDiscoverySpi.DFLT_JOIN_TIMEOUT; // 0 seconds (no timeout)
     private Integer discoveryPort = TcpDiscoverySpi.DFLT_PORT;
     private Integer communicationPort = TcpCommunicationSpi.DFLT_PORT;
+    private String localAddresses;
     private String sharedFsPath = "/tmp/structures-sharedfs";
     private String kubernetesNamespace = "default";
     private String kubernetesServiceName = "structures";

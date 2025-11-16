@@ -70,6 +70,12 @@ public interface IgniteClusterProperties {
      * Port used for Ignite discovery protocol
      */
     Integer getDiscoveryPort();
+
+    /**
+     * Comma delimited string of network addresses that should be considered
+     * when using LOCAL clustering. Should contain proper discovery port for address.
+     */
+    String getLocalAddresses();
     
     /**
      * Port used for Ignite node communication
