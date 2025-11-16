@@ -110,6 +110,11 @@ public class ContinuumIgniteConfig {
         discoverySpi.setJoinTimeout(igniteClusterProperties.getJoinTimeoutMs());
         discoverySpi.setLocalPort(igniteClusterProperties.getDiscoveryPort());
 
+        if(igniteClusterProperties.getLocalAddress() != null
+                && StringUtils.isNotBlank(igniteClusterProperties.getLocalAddress())){
+            discoverySpi.setLocalAddress(igniteClusterProperties.getLocalAddress());
+        }
+
         return discoverySpi;
     }
 
@@ -224,7 +229,7 @@ public class ContinuumIgniteConfig {
         TcpDiscoveryVmIpFinder ipFinder = new TcpDiscoveryVmIpFinder();
         if(igniteClusterProperties.getLocalAddresses() != null
                 && StringUtils.isNotBlank(igniteClusterProperties.getLocalAddresses())){
-            ipFinder.setAddresses(List.of(igniteClusterProperties.getLocalAddresses()));
+            ipFinder.setAddresses(List.of(igniteClusterProperties.getLocalAddresses().split(",")));
         } else {
             ipFinder.setAddresses(List.of("127.0.0.1:" + igniteClusterProperties.getDiscoveryPort()));
         }

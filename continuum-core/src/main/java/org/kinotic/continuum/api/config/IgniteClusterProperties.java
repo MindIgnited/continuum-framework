@@ -26,6 +26,23 @@ public interface IgniteClusterProperties {
      * Timeout in milliseconds for cluster formation/join
      */
     Long getJoinTimeoutMs(); // 0 seconds (no timeout)
+
+    /**
+     * Sets network addresses for the Discovery SPI.
+     * If not provided, the value is resolved from IgniteConfiguration.getLocalHost().
+     * If the latter is not set as well, the node binds to all available IP addresses of an
+     * environment it's running on. If there is no a non-loopback address, then InetAddress.getLocalHost()
+     * is used.
+     * NOTE: You should initialize the IgniteConfiguration.getLocalHost() or getLocalAddress()
+     * parameter with the network interface that will be used for inter-node communication.
+     * Otherwise, the node can listen on multiple network addresses available in the
+     * environment and this can prolong node failures detection if some of the addresses
+     * are not reachable from other cluster nodes. For instance, if the node is
+     * bound to 3 network interfaces, it can take up to
+     * 'IgniteConfiguration.getFailureDetectionTimeout() * 3 + getConnectionRecoveryTimeout()' milliseconds
+     * for another node to detect a disconnect of the give node.
+     */
+    String getLocalAddress();
     
     /**
      * Comma-separated list of addresses for shared filesystem discovery.
@@ -72,8 +89,9 @@ public interface IgniteClusterProperties {
     Integer getDiscoveryPort();
 
     /**
-     * Comma delimited string of network addresses that should be considered
+     * Comma-delimited string of network addresses that should be considered
      * when using LOCAL clustering. Should contain proper discovery port for address.
+     * must provide known nodes addresses.
      */
     String getLocalAddresses();
     
