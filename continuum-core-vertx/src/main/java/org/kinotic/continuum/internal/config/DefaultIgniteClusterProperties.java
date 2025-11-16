@@ -33,6 +33,7 @@ public class DefaultIgniteClusterProperties implements IgniteClusterProperties {
 
     private IgniteClusterDiscoveryType discoveryType = IgniteClusterDiscoveryType.LOCAL;
     private Long joinTimeoutMs = TcpDiscoverySpi.DFLT_JOIN_TIMEOUT; // 0 seconds (no timeout)
+    private String localAddress;
     private Integer discoveryPort = TcpDiscoverySpi.DFLT_PORT;
     private Integer communicationPort = TcpCommunicationSpi.DFLT_PORT;
     private String localAddresses;
