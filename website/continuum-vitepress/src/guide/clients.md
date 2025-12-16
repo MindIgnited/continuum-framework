@@ -199,5 +199,3 @@ The client handles all the networking, serialization, and protocol details autom
 ## What's Next?
 
 - Learn about [RPC communication patterns](./rpc-patterns)
-- Explore [events and streaming](./events-streaming) for real-time communication
-- Check out [best practices](./best-practices) for client usage

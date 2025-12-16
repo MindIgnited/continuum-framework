@@ -130,6 +130,4 @@ Choose the pattern that matches your use case, with request-response being the d
 
 ## What's Next?
 
-- Learn about [Events & Streaming](./events-streaming) for event-driven communication
 - Explore [advanced topics](./advanced) for more complex patterns
-- Check out [best practices](./best-practices) for RPC design

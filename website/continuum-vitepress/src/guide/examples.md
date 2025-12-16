@@ -421,6 +421,5 @@ For more examples, check out the [CoolCommerce project](https://github.com/Kinot
 
 ## What's Next?
 
-- Review [Best Practices](./best-practices) for design recommendations
 - Explore [Advanced Topics](./advanced) for complex scenarios
 - Check the [Reference](./reference) section for API documentation

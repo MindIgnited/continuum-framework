@@ -62,7 +62,6 @@ function sidebarGuide() {
     {
       text: 'Configuration & Advanced',
       items: [
-        // { text: 'Configuration', link: '/guide/configuration' }, this doc is mostly incorrect and needs to be updated
         { text: 'Advanced Topics', link: '/guide/advanced' },
         { text: 'Examples', link: '/guide/examples' }
       ]
@@ -75,7 +74,7 @@ function sidebarReference() {
     {
       text: 'Reference',
       items: [
-        { text: 'Continuum Config', link: '/reference/continuum-config' },
+        { text: 'Configuration', link: '/reference/continuum-config' },
         { text: 'C3 IDL', link: '/reference/c3-idl' }
       ]
     },

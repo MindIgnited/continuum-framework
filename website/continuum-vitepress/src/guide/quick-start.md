@@ -219,6 +219,5 @@ Set up your Vue/React/etc. frontend following the same pattern as Path 1 (Steps 
 
 If you run into issues:
 
-- Check the [Configuration](./configuration) guide for setup details
-- Review the [Best Practices](./best-practices) guide
+- Check the [Configuration](./reference/continuum-config) guide for setup details
 - Look at the [CoolCommerce example](https://github.com/Kinotic-Foundation/continuum-examples/tree/main/CoolCommerce) for a complete working application

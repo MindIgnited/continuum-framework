@@ -234,6 +234,4 @@ Use events when you need to broadcast information or trigger actions without wai
 
 ## What's Next?
 
-- Learn about [Configuration](./configuration) for event setup
 - Explore [Advanced Topics](./advanced) for complex event patterns
-- Check out [Best Practices](./best-practices) for event design
