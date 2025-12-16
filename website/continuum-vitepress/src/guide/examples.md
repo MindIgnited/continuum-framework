@@ -45,8 +45,8 @@ CoolCommerce consists of:
    ```
 
 4. Access the application:
-   - Frontend: http://localhost:9090
-   - Gateway: localhost:58503
+   - Frontend: [http://localhost:9090](http://localhost:9090)
+   - Gateway: [localhost:58503](localhost:58503)
 
 See the [CoolCommerce README](https://github.com/Kinotic-Foundation/continuum-examples/blob/main/CoolCommerce/README.md) for detailed setup instructions.
 
@@ -422,4 +422,3 @@ For more examples, check out the [CoolCommerce project](https://github.com/Kinot
 ## What's Next?
 
 - Explore [Advanced Topics](./advanced) for complex scenarios
-- Check the [Reference](./reference) section for API documentation

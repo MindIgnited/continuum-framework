@@ -192,8 +192,6 @@ You can call other Continuum services directly by injecting them as Spring beans
 > ℹ️ **Note:** This approach works across processes or distributed services, not just within the same Spring application.  
 > To see a full, production-ready example, check out the [CoolCommerce project](https://github.com/Kinotic-Foundation/continuum-examples/tree/main/CoolCommerce).
 
-For more about multi-process and advanced patterns, see our [advanced Java service docs](./advanced-java-services).
-
 
 When you need to call another Continuum service, just inject it like any other Spring bean:
 

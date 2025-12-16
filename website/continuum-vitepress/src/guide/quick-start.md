@@ -207,17 +207,9 @@ Set up your Vue/React/etc. frontend following the same pattern as Path 1 (Steps 
 
 ### What's Next?
 
-- Learn more about [Gateway configuration](./configuration)
 - Explore [client usage patterns](./clients)
 - Check back for upcoming Node.js/Bun server documentation
 
 </details>
 
 ---
-
-## Need Help?
-
-If you run into issues:
-
-- Check the [Configuration](./reference/continuum-config) guide for setup details
-- Look at the [CoolCommerce example](https://github.com/Kinotic-Foundation/continuum-examples/tree/main/CoolCommerce) for a complete working application
