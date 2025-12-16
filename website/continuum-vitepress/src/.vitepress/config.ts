@@ -5,6 +5,10 @@ export default defineConfig({
   title: "Continuum",
   description: "Insanely versatile IoT and Microservice framework",
   base: '/continuum-framework/website/',
+  ignoreDeadLinks: [
+    // ignore all localhost links
+    /^https?:\/\/localhost/,
+  ],
   themeConfig: {
     logo: '/icon.png',
     // https://vitepress.vuejs.org/reference/default-theme-config
