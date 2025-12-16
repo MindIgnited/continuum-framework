@@ -16,8 +16,8 @@ Want to expose a service remotely? Just add `@Publish` to your interface. That's
 
 This means:
 - **No boilerplate**: Write your service interface, implement it, and you're done
-- **No configuration needed**: Sensible defaults work out of the box
-- **No infrastructure knowledge required**: You don't need to understand transport protocols or service discovery to get started
+- **Minimal configuration needed**: Sensible defaults work out of the box
+- **No network knowledge required**: You don't need to understand transport protocols or service discovery to get started
 - **When you need depth, it's there**: The documentation covers internals, but you don't need them to use Continuum effectively
 
 ## Key Value Propositions
