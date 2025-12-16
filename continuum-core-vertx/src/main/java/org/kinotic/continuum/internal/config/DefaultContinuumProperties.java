@@ -21,13 +21,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.kinotic.continuum.api.config.ContinuumProperties;
-import org.kinotic.continuum.api.config.IgniteClusterDiscoveryType;
-import org.kinotic.continuum.api.config.IgniteClusterProperties;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.ignite.configuration.DataStorageConfiguration;
-import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

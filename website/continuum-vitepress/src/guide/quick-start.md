@@ -13,17 +13,13 @@ What do you want to build? Click on a path below to expand the step-by-step inst
 <details>
 <summary><strong>Path 1: Java backend with a web frontend</strong></summary>
 
-Building a full-stack application with Java services and a TypeScript/JavaScript frontend
+Building a full-stack application with Java services and a Vue/React/etc. frontend
 
 ### Prerequisites
 
-This is the most common pattern for full-stack applications. You'll create Java services that can be called from a TypeScript/JavaScript frontend.
-
-### Prerequisites
-
-- Java 17 or higher
+- Java 21 or higher
 - A Spring Boot application (or create a new one)
-- Node.js and npm/pnpm/yarn (for the frontend)
+- npm, pnpm, or yarn (to install the Continuum client library in your frontend)
 
 ### Step 1: Add Dependencies
 
@@ -68,12 +64,10 @@ Create a service interface and add the `@Publish` annotation:
 
 ```java
 import org.kinotic.continuum.api.annotations.Publish;
-import java.util.List;
 
 @Publish
 public interface HelloService {
     String sayHello(String name);
-    List<String> getGreetings();
 }
 ```
 
@@ -85,8 +79,6 @@ Implement your service interface as a standard Spring component:
 
 ```java
 import org.springframework.stereotype.Component;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class DefaultHelloService implements HelloService {
@@ -94,11 +86,6 @@ public class DefaultHelloService implements HelloService {
     @Override
     public String sayHello(String name) {
         return "Hello, " + name + "!";
-    }
-    
-    @Override
-    public List<String> getGreetings() {
-        return Arrays.asList("Hello", "Hi", "Hey");
     }
 }
 ```
@@ -119,7 +106,7 @@ yarn add @kinotic/continuum-client
 
 ### Step 6: Connect and Call Your Service
 
-In your frontend code, connect to Continuum and create a service proxy:
+In your frontend code (Vue, React, etc.), connect to Continuum and create a service proxy:
 
 ```typescript
 import { Continuum, IServiceProxy } from '@kinotic/continuum-client'
@@ -130,19 +117,32 @@ const connectionInfo = {
     port: 58503  // Default Continuum Gateway port
 }
 
-const connectedInfo = await Continuum.connect(connectionInfo)
+await Continuum.connect(connectionInfo)
 
-// Create a service proxy
-const helloService: IServiceProxy = Continuum.serviceProxy(
-    'com.yourpackage.HelloService'  // Full class name of your service interface
-)
+// Create a typed service proxy
+interface IHelloService {
+    sayHello(name: string): Promise<string>
+}
 
-// Call your service methods
-const greeting = await helloService.invoke('sayHello', ['World'])
+class HelloService implements IHelloService {
+    protected serviceProxy: IServiceProxy
+    
+    constructor() {
+        this.serviceProxy = Continuum.serviceProxy(
+            'com.yourpackage.HelloService'
+        )
+    }
+    
+    async sayHello(name: string): Promise<string> {
+        return this.serviceProxy.invoke('sayHello', [name])
+    }
+}
+
+const HELLO_SERVICE = new HelloService()
+
+// Call your service
+const greeting = await HELLO_SERVICE.sayHello('World')
 console.log(greeting)  // "Hello, World!"
-
-const greetings = await helloService.invoke('getGreetings', [])
-console.log(greetings)  // ["Hello", "Hi", "Hey"]
 ```
 
 ### Step 7: Run and Test
@@ -164,42 +164,20 @@ You now have a working Continuum application!
 <details>
 <summary><strong>Path 2: Node.js or Bun backend with a web frontend</strong></summary>
 
-Building with a Node.js/Bun backend and TypeScript/JavaScript frontend
+Building with a Node.js/Bun backend and Vue/React/etc. frontend
 
-This path is for developers building with Node.js or Bun backends. Since Continuum's core implementation is in Java, you'll need a separate Gateway server for non-Java backends.
+This path is for developers building backend services with Node.js or Bun. The Continuum Gateway serves as a router between your clients and your microservices, providing security and observability.
 
 ### Prerequisites
 
-- Java 17 or higher (for the Gateway server)
-- Node.js 18+ or Bun
-- A Node.js/Bun project (or create a new one)
+- Docker (for the Gateway server)
+- Node.js 18+ or Bun (for your backend service)
+- A frontend framework (Vue, React, etc.)
 
 ### Step 1: Set Up the Gateway Server
 
-Create a separate Spring Boot application for the Gateway:
-
-```java
-import org.kinotic.continuum.api.annotations.EnableContinuum;
-import org.kinotic.continuum.gateway.api.annotations.EnableContinuumGateway;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-@EnableContinuum
-@EnableContinuumGateway
-public class GatewayApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class, args);
-    }
-}
-```
-
-Add the Gateway dependency:
-
-```gradle
-dependencies {
-    implementation "org.kinotic:continuum-gateway:${continuumVersion}"
-}
+```bash
+docker run -p 58503:58503 kinotic/continuum-gateway-server:latest
 ```
 
 The Gateway acts as a router, allowing your Node.js/Bun services and frontend clients to communicate through Continuum.
@@ -218,7 +196,7 @@ Create your service in Node.js/Bun. (Note: Full Node.js/Bun server support docum
 
 ### Step 4: Frontend Setup
 
-Follow the same frontend setup as Path 1 (Steps 5-6), connecting to the Gateway server.
+Set up your Vue/React/etc. frontend following the same pattern as Path 1 (Steps 5-6), connecting to the Gateway server.
 
 ### Step 5: Run and Test
 

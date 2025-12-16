@@ -28,7 +28,7 @@ export default defineConfig({
 
 function nav() {
   return [
-    { text: 'Guide', link: '/guide/overview', activeMatch: '/guide/' },
+    { text: 'Guide', link: '/guide/introduction', activeMatch: '/guide/' },
     {
       text: 'Reference',
       link: '/reference/continuum-config',
@@ -44,17 +44,27 @@ function nav() {
 function sidebarGuide() {
   return [
     {
-      text: 'Introduction',
+      text: 'Getting Started',
       items: [
-        { text: 'What is Continuum?', link: '/guide/overview' },
-        { text: 'Getting Started', link: '/guide/getting-started' }
+        { text: 'Introduction', link: '/guide/introduction' },
+        { text: 'Quick Start', link: '/guide/quick-start' }
       ]
     },
     {
-      text: 'Details',
+      text: 'Core Concepts',
       items: [
-        { text: 'Command Line', link: '/guide/cli-overview' },
-        { text: 'Services', link: '/guide/services' }
+        { text: 'Java Services', link: '/guide/java-services' },
+        { text: 'Clients', link: '/guide/clients' },
+        { text: 'RPC Patterns', link: '/guide/rpc-patterns' },
+        // { text: 'Events & Streaming', link: '/guide/events-streaming' } remove until we have a higher level API, this functionality is what RPC is built on so direct usage of this could cause confusion
+      ]
+    },
+    {
+      text: 'Configuration & Advanced',
+      items: [
+        // { text: 'Configuration', link: '/guide/configuration' }, this doc is mostly incorrect and needs to be updated
+        { text: 'Advanced Topics', link: '/guide/advanced' },
+        { text: 'Examples', link: '/guide/examples' }
       ]
     }
   ]
