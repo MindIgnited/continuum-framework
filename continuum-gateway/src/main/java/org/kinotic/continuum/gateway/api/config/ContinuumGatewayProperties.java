@@ -18,7 +18,6 @@
 package org.kinotic.continuum.gateway.api.config;
 
 import io.vertx.ext.stomp.lite.StompServerOptions;
-import io.vertx.mqtt.MqttServerOptions;
 import lombok.Getter;
 import lombok.Setter;
 import org.kinotic.continuum.api.config.ContinuumProperties;
@@ -39,9 +38,7 @@ public class ContinuumGatewayProperties {
     public static String DEFAULT_REST_PATH = "/api";
     public static long DEFAULT_REST_BODY_LIMIT_SIZE = 2048;
 
-    private final StompServerOptions stomp;
-
-    private final MqttServerOptions mqtt;
+    private StompServerOptions stomp = new StompServerOptions();
 
     private final ContinuumRestServerProperties rest = new ContinuumRestServerProperties();
 
@@ -56,7 +53,5 @@ public class ContinuumGatewayProperties {
                 .setPort(DEFAULT_STOMP_PORT)
                 .setWebsocketPath(DEFAULT_STOMP_WEBSOCKET_PATH)
                 .setDebugEnabled(continuumProperties.isDebug());
-
-        mqtt = new MqttServerOptions();
     }
 }

@@ -105,14 +105,4 @@ public class ContinuumVertxConfig {
         }
     }
 
-    /**
-     * Properly shutdown vertx instance on application shutdown
-     * Waiting up to 2 minutes for shutdown to complete
-     */
-    @PreDestroy
-    public void shutdown(Vertx vertx) {
-        Future<?> future = vertx.close();
-        Awaitility.await().atMost(2, TimeUnit.MINUTES).until(future::isComplete);
-    }
-
 }

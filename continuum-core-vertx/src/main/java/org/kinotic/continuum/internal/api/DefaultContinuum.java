@@ -77,12 +77,14 @@ public class DefaultContinuum implements Continuum {
     private final ContinuumProperties continuumProperties;
     private final IgniteClusterProperties igniteClusterProperties;
     private final ServerInfo serverInfo;
+    private final Vertx vertx;
     private String applicationName;
     private String applicationVersion;
 
     public DefaultContinuum(ResourceLoader resourceLoader,
                             @Autowired(required = false)
                             ClusterManager clusterManager,
+                            Vertx vertx,
                             ApplicationContext applicationContext,
                             ContinuumProperties continuumProperties,
                             IgniteClusterProperties igniteClusterProperties,
@@ -103,6 +105,7 @@ public class DefaultContinuum implements Continuum {
                                     .orElse("");
              nodeName = nodeName + " " + WordUtils.capitalize(temp);
         }
+        this.vertx = vertx;
         this.continuumProperties = continuumProperties;
         this.igniteClusterProperties = igniteClusterProperties;
         String nodeId = (clusterManager != null  ?  clusterManager.getNodeId() : UUID.randomUUID().toString());
@@ -200,4 +203,14 @@ public class DefaultContinuum implements Continuum {
         return serverInfo;
     }
 
+
+    /**
+     * Properly shutdown vertx instance on application shutdown
+     * Waiting up to 2 minutes for shutdown to complete
+     */
+    @PreDestroy
+    public void shutdown() {
+        Future<?> future = vertx.close();
+        Awaitility.await().atMost(2, TimeUnit.MINUTES).until(future::isComplete);
+    }
 }

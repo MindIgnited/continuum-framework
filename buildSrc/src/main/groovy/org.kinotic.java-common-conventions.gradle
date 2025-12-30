@@ -40,23 +40,10 @@ dependencyManagement {
 
         dependency "io.mindsignited:vertx-stomp-lite:${vertxStompLiteVersion}"
 
-        // Override netty versions so we can patch security issues
-        // This needs to be the complete list used by vertx
-        dependency "io.netty:netty-buffer:${nettyVersion}"
-        dependency "io.netty:netty-codec-http2:${nettyVersion}"
-        dependency "io.netty:netty-codec-http:${nettyVersion}"
-        dependency "io.netty:netty-common:${nettyVersion}"
-        dependency "io.netty:netty-handler-proxy:${nettyVersion}"
-        dependency "io.netty:netty-handler:${nettyVersion}"
-        dependency "io.netty:netty-resolver-dns:${nettyVersion}"
-        dependency "io.netty:netty-resolver:${nettyVersion}"
-        dependency "io.netty:netty-transport:${nettyVersion}"
-
         dependency "io.vertx:vertx-core:${vertxVersion}"
         dependency "io.vertx:vertx-web:${vertxVersion}"
         dependency "io.vertx:vertx-web-client:${vertxVersion}"
         dependency "io.vertx:vertx-auth-common:${vertxVersion}"
-        dependency "io.vertx:vertx-mqtt:${vertxVersion}"
         dependency "io.vertx:vertx-ignite:${vertxVersion}"
         dependency "io.vertx:vertx-reactive-streams:${vertxVersion}"
         dependency "io.vertx:vertx-web-graphql:${vertxVersion}"
