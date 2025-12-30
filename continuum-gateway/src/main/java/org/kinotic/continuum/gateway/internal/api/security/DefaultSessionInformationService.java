@@ -17,18 +17,17 @@
 
 package org.kinotic.continuum.gateway.internal.api.security;
 
+import io.vertx.core.Vertx;
+import org.apache.ignite.Ignite;
+import org.apache.ignite.IgniteCache;
+import org.apache.ignite.cache.query.ScanQuery;
 import org.kinotic.continuum.core.api.event.StreamData;
 import org.kinotic.continuum.core.api.security.SessionMetadata;
 import org.kinotic.continuum.gateway.api.security.SessionInformationService;
 import org.kinotic.continuum.internal.config.IgniteCacheConstants;
 import org.kinotic.continuum.internal.core.api.aignite.IgniteContinuousQueryObserver;
-import org.kinotic.continuum.internal.utils.IgniteUtil;
 import org.kinotic.continuum.internal.core.api.security.DefaultSessionMetadata;
-import io.vertx.core.Vertx;
-import org.apache.ignite.Ignite;
-import org.apache.ignite.IgniteCache;
-import org.apache.ignite.cache.query.QueryCursor;
-import org.apache.ignite.cache.query.ScanQuery;
+import org.kinotic.continuum.internal.utils.IgniteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,6 @@ import reactor.core.scheduler.Schedulers;
 @Component
 public class DefaultSessionInformationService implements SessionInformationService {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultSessionInformationService.class);
-
     private final Vertx vertx;
     private final Ignite ignite;
     private final IgniteCache<String, DefaultSessionMetadata> sessionCache;
@@ -54,7 +51,6 @@ public class DefaultSessionInformationService implements SessionInformationServi
 
     public DefaultSessionInformationService(Vertx vertx,
                                             @Autowired(required = false) Ignite ignite) {
-
         this.vertx = vertx;
         this.ignite = ignite;
 
@@ -65,7 +61,10 @@ public class DefaultSessionInformationService implements SessionInformationServi
             sessionCache = null;
         }
 
-        scheduler = Schedulers.fromExecutor(command -> vertx.executeBlocking(v -> command.run(), null));
+        scheduler = Schedulers.fromExecutor(command -> vertx.executeBlocking(() -> {
+            command.run();
+            return null;
+        }));
     }
 
     @Override

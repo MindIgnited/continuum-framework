@@ -38,6 +38,8 @@ dependencyManagement {
         dependency "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
         dependency "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
 
+        dependency "io.mindsignited:vertx-stomp-lite:${vertxStompLiteVersion}"
+
         // Override netty versions so we can patch security issues
         // This needs to be the complete list used by vertx
         dependency "io.netty:netty-buffer:${nettyVersion}"
@@ -76,8 +78,6 @@ dependencyManagement {
         dependency "net.jodah:failsafe:${failsafeVersion}"
 
         dependency "org.apache.groovy:groovy:${groovyVersion}"
-
-        dependency "org.kinotic:vertx-stomp-lite:${vertxStompLiteVersion}"
 
         dependency "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
     }

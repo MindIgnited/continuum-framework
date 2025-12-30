@@ -15,7 +15,7 @@ dependencies {
     implementation 'io.vertx:vertx-core'
     api 'io.vertx:vertx-web'
     implementation 'io.vertx:vertx-mqtt'
-    implementation 'org.kinotic:vertx-stomp-lite'
+    implementation 'io.mindsignited:vertx-stomp-lite'
 
     implementation 'org.apache.ignite:ignite-core'
 

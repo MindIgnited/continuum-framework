@@ -27,8 +27,8 @@ import reactor.core.publisher.Flux;
  *
  * Created by Navid Mitchell on 6/3/20
  */
-@Publish
-@Version("0.1.0")
+//@Publish FIXME: add RBAC for this
+//@Version("0.1.0")
 public interface SessionInformationService {
 
     Flux<Long> countActiveSessionsContinuous();

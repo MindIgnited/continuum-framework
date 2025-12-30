@@ -57,12 +57,9 @@ public class DefaultStompServerHandler implements StompServerHandler {
     }
 
     @Override
-    public Promise<Map<String, String>> authenticate(Map<String, String> connectHeaders) {
-        Promise<Map<String,String>> ret = Promise.promise();
-        Future<Map<String,String>> future = Future.fromCompletionStage(endpointConnectionHandler.authenticate(connectHeaders),
+    public Future<Map<String, String>> authenticate(Map<String, String> connectHeaders) {
+        return Future.fromCompletionStage(endpointConnectionHandler.authenticate(connectHeaders),
                                                                        vertx.getOrCreateContext());
-        future.onComplete(ret);
-        return ret;
     }
 
     @Override

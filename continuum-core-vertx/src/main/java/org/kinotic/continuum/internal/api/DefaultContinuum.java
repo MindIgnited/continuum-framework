@@ -77,14 +77,12 @@ public class DefaultContinuum implements Continuum {
     private final ContinuumProperties continuumProperties;
     private final IgniteClusterProperties igniteClusterProperties;
     private final ServerInfo serverInfo;
-    private final Vertx vertx;
     private String applicationName;
     private String applicationVersion;
 
     public DefaultContinuum(ResourceLoader resourceLoader,
                             @Autowired(required = false)
                             ClusterManager clusterManager,
-                            Vertx vertx,
                             ApplicationContext applicationContext,
                             ContinuumProperties continuumProperties,
                             IgniteClusterProperties igniteClusterProperties,
@@ -105,7 +103,6 @@ public class DefaultContinuum implements Continuum {
                                     .orElse("");
              nodeName = nodeName + " " + WordUtils.capitalize(temp);
         }
-        this.vertx = vertx;
         this.continuumProperties = continuumProperties;
         this.igniteClusterProperties = igniteClusterProperties;
         String nodeId = (clusterManager != null  ?  clusterManager.getNodeId() : UUID.randomUUID().toString());
@@ -203,10 +200,4 @@ public class DefaultContinuum implements Continuum {
         return serverInfo;
     }
 
-    @PreDestroy
-    public void shutdown(){
-        Promise<Void> promise = Promise.promise();
-        vertx.close(promise);
-        Awaitility.await().atMost(2, TimeUnit.MINUTES).until(() -> promise.future().isComplete());
-    }
 }

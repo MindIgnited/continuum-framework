@@ -110,8 +110,14 @@ public class DefaultEventBusService implements EventBusService {
         return Mono.create(sink -> {
             final MessageConsumer<byte[]> consumer = vertx.eventBus().consumer(cri);
             final ConnectableFlux<Event<byte[]>> flux = _listen(null, consumer).publish();
-            consumer.completionHandler(event -> sink.success(flux));
-            flux.connect(); // we have to connect now so flux create will be signaled and vertx consumer handler will be set
+            consumer.completion().onComplete(ar ->{
+                if(ar.succeeded()){
+                    sink.success(flux);
+                    flux.connect(); // we have to connect now so flux create will be signaled and vertx consumer handler will be set
+                }else{
+                    sink.error(ar.cause());
+                }
+            });
         });
     }
 
