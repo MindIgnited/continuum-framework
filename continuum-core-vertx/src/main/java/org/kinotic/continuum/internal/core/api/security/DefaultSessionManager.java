@@ -62,7 +62,6 @@ public class DefaultSessionManager implements SessionManager {
         this.random = new PRNG(vertx);
         this.parser = new PathPatternParser();
         this.parser.setPathOptions(PathContainer.Options.MESSAGE_ROUTE);
-        this.parser.setMatchOptionalTrailingSeparator(false);
 
         // Will be null when running some tests
         if(ignite !=  null){

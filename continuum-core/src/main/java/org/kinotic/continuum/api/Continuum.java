@@ -25,7 +25,6 @@ import org.kinotic.continuum.api.annotations.Publish;
  *
  * Created by navid on 9/24/19
  */
-@Publish
 public interface Continuum {
 
     /**

@@ -1,6 +1,5 @@
 package org.kinotic.continuum.gateway.internal.endpoints;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.stomp.lite.StompServerHandlerFactory;
@@ -16,6 +15,7 @@ import org.kinotic.continuum.gateway.api.config.ContinuumGatewayProperties;
 import org.kinotic.continuum.gateway.internal.endpoints.rest.RestServerVerticle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -31,21 +31,21 @@ public class ContinuumVertcleFactory {
     private final StompServerHandlerFactory stompServerHandlerFactory;
     private final EventBusService eventService;
     private final SecurityService securityService;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final Vertx vertx;
 
     public ContinuumVertcleFactory(ContinuumProperties continuumProperties,
                                    ContinuumGatewayProperties gatewayProperties,
                                    StompServerHandlerFactory stompServerHandlerFactory,
                                    EventBusService eventService,
-                                   ObjectMapper objectMapper,
+                                   JsonMapper jsonMapper,
                                    Vertx vertx,
                                    @Autowired(required = false) SecurityService securityService) {
         this.continuumProperties = continuumProperties;
         this.gatewayProperties = gatewayProperties;
         this.stompServerHandlerFactory = stompServerHandlerFactory;
         this.eventService = eventService;
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.vertx = vertx;
         this.securityService = securityService;
     }
@@ -67,7 +67,7 @@ public class ContinuumVertcleFactory {
     }
 
     public RestServerVerticle createRestServerVerticle(){
-       return new RestServerVerticle(gatewayProperties, eventService, securityService, objectMapper);
+       return new RestServerVerticle(gatewayProperties, eventService, securityService, jsonMapper);
     }
 
 }

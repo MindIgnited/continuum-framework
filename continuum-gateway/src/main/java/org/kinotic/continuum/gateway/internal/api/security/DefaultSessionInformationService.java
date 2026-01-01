@@ -28,8 +28,6 @@ import org.kinotic.continuum.internal.config.IgniteCacheConstants;
 import org.kinotic.continuum.internal.core.api.aignite.IgniteContinuousQueryObserver;
 import org.kinotic.continuum.internal.core.api.security.DefaultSessionMetadata;
 import org.kinotic.continuum.internal.utils.IgniteUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;

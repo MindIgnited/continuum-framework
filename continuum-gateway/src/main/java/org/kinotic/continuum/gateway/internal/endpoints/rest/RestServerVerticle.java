@@ -17,7 +17,6 @@
 
 package org.kinotic.continuum.gateway.internal.endpoints.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Promise;
@@ -45,6 +44,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -65,7 +65,7 @@ public class RestServerVerticle extends AbstractVerticle {
     private final ContinuumGatewayProperties gatewayProperties;
     private final EventBusService eventService;
     private final SecurityService securityService;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private Scheduler scheduler;
 
@@ -111,7 +111,7 @@ public class RestServerVerticle extends AbstractVerticle {
 
                 Participant participant = routingContext.get(EventConstants.SENDER_HEADER);
                 if(participant != null){
-                    requestEvent.metadata().put(EventConstants.SENDER_HEADER, objectMapper.writeValueAsString(participant));
+                    requestEvent.metadata().put(EventConstants.SENDER_HEADER, jsonMapper.writeValueAsString(participant));
                 }
 
                 // now send event to invoke remote service

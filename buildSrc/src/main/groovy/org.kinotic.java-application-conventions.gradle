@@ -44,14 +44,15 @@ bootBuildImage {
  * The following should be configured on launch as well
  * 		"--spring.profiles.active=production"
  */
-// These properties
-applicationDefaultJvmArgs = [
-		"-Djava.awt.headless=true",
-		"-Djava.net.preferIPv4Stack=true",
-		"-Dvertx.disableDnsResolver=true", // done because of this issue.. https://github.com/eclipse/vert.x/issues/1753 http://stackoverflow.com/questions/42110790/vertx-httpclient-getnow-not-working
-		"-server",
-		"-XX:+AlwaysPreTouch",
-		"-XX:+UseG1GC",
-		"-XX:+ScavengeBeforeFullGC",
-		"-XX:+DisableExplicitGC"
-]
+application {
+    applicationDefaultJvmArgs = [
+            "-Djava.awt.headless=true",
+            "-Djava.net.preferIPv4Stack=true",
+            "-Dvertx.disableDnsResolver=true", // done because of this issue.. https://github.com/eclipse/vert.x/issues/1753 http://stackoverflow.com/questions/42110790/vertx-httpclient-getnow-not-working
+            "-server",
+            "-XX:+AlwaysPreTouch",
+            "-XX:+UseG1GC",
+            "-XX:+ScavengeBeforeFullGC",
+            "-XX:+DisableExplicitGC"
+    ]
+}
