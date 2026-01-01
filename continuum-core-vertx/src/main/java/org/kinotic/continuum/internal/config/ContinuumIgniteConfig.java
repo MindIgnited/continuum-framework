@@ -134,11 +134,6 @@ public class ContinuumIgniteConfig {
 
         IgniteConfiguration cfg = new IgniteConfiguration();
 
-        // Path workPath =
-        // Path.of(SystemUtils.getUserHome().getAbsolutePath(),".continuum", "ignite",
-        // "work");
-        // cfg.setWorkDirectory(workPath.toAbsolutePath().toString());
-
         cfg.setGridLogger(new Slf4jLogger());
 
         // Turn Stuff OFF
@@ -217,8 +212,7 @@ public class ContinuumIgniteConfig {
         log.info("Configuring LOCAL discovery (single-node mode)");
 
         TcpDiscoveryVmIpFinder ipFinder = new TcpDiscoveryVmIpFinder();
-        if(igniteClusterProperties.getLocalAddresses() != null
-                && StringUtils.isNotBlank(igniteClusterProperties.getLocalAddresses())){
+        if(StringUtils.isNotBlank(igniteClusterProperties.getLocalAddresses())){
             ipFinder.setAddresses(List.of(igniteClusterProperties.getLocalAddresses().split(",")));
         } else {
             ipFinder.setAddresses(List.of("127.0.0.1:" + igniteClusterProperties.getDiscoveryPort()));
