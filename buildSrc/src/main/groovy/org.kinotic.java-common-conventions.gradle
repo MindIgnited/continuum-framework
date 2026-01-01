@@ -47,7 +47,7 @@ dependencyManagement {
         dependency "io.vertx:vertx-web-graphql:${vertxVersion}"
         dependency "io.vertx:vertx-health-check:${vertxVersion}"
 
-        dependency "javax.annotation:javax.annotation-api:${javaxAnnotationApi}"
+        dependency "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationVersion}"
         dependency "javax.cache:cache-api:${jCacheApiVersion}"
 
         dependency "org.apache.commons:commons-lang3:${apacheCommonsLangVersion}"
@@ -74,14 +74,17 @@ dependencies {
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.apache.commons:commons-text'
-
     implementation 'ch.qos.logback:logback-core'
     implementation 'ch.qos.logback:logback-classic'
 
     implementation 'io.opentelemetry:opentelemetry-api'
     implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations'
+
+    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
+
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.apache.commons:commons-text'
+
 
     // Add aspectj weaver dependency for use during tests
     agent "org.aspectj:aspectjweaver:$aspectJVersion"

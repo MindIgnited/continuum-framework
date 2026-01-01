@@ -17,26 +17,11 @@
 
 package org.kinotic.continuum.internal.config;
 
-import static org.apache.ignite.failure.FailureType.CRITICAL_ERROR;
-import static org.apache.ignite.failure.FailureType.SEGMENTATION;
-import static org.apache.ignite.failure.FailureType.SYSTEM_CRITICAL_OPERATION_TIMEOUT;
-import static org.apache.ignite.failure.FailureType.SYSTEM_WORKER_BLOCKED;
-import static org.apache.ignite.failure.FailureType.SYSTEM_WORKER_TERMINATION;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ignite.IgniteSystemProperties;
 import org.apache.ignite.calcite.CalciteQueryEngineConfiguration;
-import org.apache.ignite.configuration.CacheConfiguration;
-import org.apache.ignite.configuration.DataRegionConfiguration;
-import org.apache.ignite.configuration.DataStorageConfiguration;
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.configuration.SqlConfiguration;
+import org.apache.ignite.configuration.*;
 import org.apache.ignite.events.EventType;
 import org.apache.ignite.failure.FailureHandler;
 import org.apache.ignite.failure.NoOpFailureHandler;
@@ -60,7 +45,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import lombok.extern.slf4j.Slf4j;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+
+import static org.apache.ignite.failure.FailureType.*;
 
 /**
  * Class provides environment agnostic configuration for ignite
@@ -110,8 +101,7 @@ public class ContinuumIgniteConfig {
         discoverySpi.setJoinTimeout(igniteClusterProperties.getJoinTimeoutMs());
         discoverySpi.setLocalPort(igniteClusterProperties.getDiscoveryPort());
 
-        if(igniteClusterProperties.getLocalAddress() != null
-                && StringUtils.isNotBlank(igniteClusterProperties.getLocalAddress())){
+        if(StringUtils.isNotBlank(igniteClusterProperties.getLocalAddress())){
             discoverySpi.setLocalAddress(igniteClusterProperties.getLocalAddress());
         }
 

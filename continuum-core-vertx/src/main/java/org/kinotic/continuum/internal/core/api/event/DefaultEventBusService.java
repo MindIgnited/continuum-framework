@@ -17,13 +17,16 @@
 
 package org.kinotic.continuum.internal.core.api.event;
 
-import io.vertx.core.*;
+import io.vertx.core.Context;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.core.spi.cluster.RegistrationInfo;
 import io.vertx.core.tracing.TracingPolicy;
 import io.vertx.spi.cluster.ignite.impl.IgniteRegistrationInfo;
+import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.Validate;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
@@ -45,7 +48,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
-import javax.annotation.PostConstruct;
 import javax.cache.configuration.Factory;
 import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;

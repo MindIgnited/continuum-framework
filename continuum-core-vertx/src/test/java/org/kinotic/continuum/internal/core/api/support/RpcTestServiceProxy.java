@@ -17,11 +17,11 @@
 
 package org.kinotic.continuum.internal.core.api.support;
 
-import com.fasterxml.jackson.databind.util.TokenBuffer;
 import io.vertx.core.Future;
 import org.kinotic.continuum.api.annotations.Proxy;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.util.TokenBuffer;
 
 import java.util.List;
 import java.util.Map;

@@ -162,8 +162,7 @@ final class JacksonTokenizer {
 	}
 
 	private TokenBuffer createToken() {
-		TokenBuffer tokenBuffer = TokenBuffer.forBuffering(this.parser, this.parser.objectReadContext());
-		return tokenBuffer;
+        return TokenBuffer.forBuffering(this.parser, this.parser.objectReadContext());
 	}
 
 	private boolean isTopLevelArrayToken(JsonToken token) {

@@ -17,7 +17,6 @@
 
 package org.kinotic.continuum.internal.core.api.support;
 
-import io.qameta.allure.internal.shadowed.jackson.core.JsonProcessingException;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import org.kinotic.continuum.api.security.Participant;

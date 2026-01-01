@@ -9,7 +9,6 @@ dependencies {
 
     implementation 'org.springframework:spring-core'
     implementation 'org.springframework:spring-context'
-    implementation 'javax.annotation:javax.annotation-api'
     implementation 'org.springframework.boot:spring-boot-autoconfigure' // Used for conditionally wiring beans
 
     implementation 'io.vertx:vertx-core'

@@ -12,9 +12,7 @@ dependencies {
     implementation 'org.springframework:spring-context'
     implementation 'org.springframework:spring-aop'
     implementation 'org.springframework:spring-web' // used for json conversion functionality spring web has a lot of helpful utilities
-    implementation 'javax.annotation:javax.annotation-api'
     implementation 'org.springframework.boot:spring-boot-autoconfigure' // Used for conditionally wiring beans
-
 
     // vertx
     api 'io.vertx:vertx-core'
