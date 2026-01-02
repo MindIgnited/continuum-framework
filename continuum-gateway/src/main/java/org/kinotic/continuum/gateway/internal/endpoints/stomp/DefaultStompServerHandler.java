@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.ext.stomp.lite.StompServerConnection;
 import io.vertx.ext.stomp.lite.StompServerHandler;

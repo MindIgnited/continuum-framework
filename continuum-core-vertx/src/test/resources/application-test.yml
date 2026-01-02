@@ -17,6 +17,4 @@
       org:
         kinotic: TRACE
       io:
-        vertx:
-          ext:
-            stomp: DEBUG
+        vertx: DEBUG

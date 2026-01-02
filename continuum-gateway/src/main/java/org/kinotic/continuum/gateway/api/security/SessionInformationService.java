@@ -17,10 +17,9 @@
 
 package org.kinotic.continuum.gateway.api.security;
 
-import org.kinotic.continuum.api.annotations.Publish;
-import org.kinotic.continuum.api.annotations.Version;
 import org.kinotic.continuum.core.api.event.StreamData;
 import org.kinotic.continuum.core.api.security.SessionMetadata;
+
 import reactor.core.publisher.Flux;
 
 /**

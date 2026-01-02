@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ignite.IgniteSystemProperties;
 import org.apache.ignite.calcite.CalciteQueryEngineConfiguration;
 import org.apache.ignite.configuration.*;
-import org.apache.ignite.events.EventType;
 import org.apache.ignite.failure.FailureHandler;
 import org.apache.ignite.failure.NoOpFailureHandler;
 import org.apache.ignite.failure.StopNodeOrHaltFailureHandler;
@@ -51,6 +50,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import static org.apache.ignite.events.EventType.*;
 import static org.apache.ignite.failure.FailureType.*;
 
 /**
@@ -176,7 +176,7 @@ public class ContinuumIgniteConfig {
         }
 
         // Settings needed for vertx cluster manager!
-        cfg.setIncludeEventTypes(EventType.EVT_CACHE_OBJECT_REMOVED);
+        cfg.setIncludeEventTypes(EVT_CACHE_OBJECT_REMOVED, EVT_NODE_JOINED, EVT_NODE_LEFT, EVT_NODE_FAILED, EVT_NODE_SEGMENTED);
 
         cfg.setFailureHandler(failureHandler);
 
