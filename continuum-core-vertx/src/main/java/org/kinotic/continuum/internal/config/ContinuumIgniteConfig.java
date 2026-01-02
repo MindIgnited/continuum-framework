@@ -98,8 +98,8 @@ public class ContinuumIgniteConfig {
                 discoverySpi.setIpFinder(createLocalIpFinder());
         }
 
-        discoverySpi.setJoinTimeout(igniteClusterProperties.getJoinTimeoutMs());
-        discoverySpi.setLocalPort(igniteClusterProperties.getDiscoveryPort());
+//        discoverySpi.setJoinTimeout(igniteClusterProperties.getJoinTimeoutMs());
+//        discoverySpi.setLocalPort(igniteClusterProperties.getDiscoveryPort());
 
         if(StringUtils.isNotBlank(igniteClusterProperties.getLocalAddress())){
             discoverySpi.setLocalAddress(igniteClusterProperties.getLocalAddress());
@@ -182,7 +182,7 @@ public class ContinuumIgniteConfig {
 
         cfg.setWorkDirectory(continuumProperties.getIgniteWorkDirectory());
 
-        // cfg.setPeerClassLoadingEnabled(true);
+        cfg.setPeerClassLoadingEnabled(false);
 
         return cfg;
     }

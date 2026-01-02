@@ -115,11 +115,11 @@ public class DefaultEventBusService implements EventBusService {
             consumer.completion().onComplete(ar ->{
                 if(ar.succeeded()){
                     sink.success(flux);
-                    flux.connect(); // we have to connect now so flux create will be signaled and vertx consumer handler will be set
                 }else{
                     sink.error(ar.cause());
                 }
             });
+            flux.connect(); // we have to connect now so flux create will be signaled and vertx consumer handler will be set
         });
     }
 
@@ -242,7 +242,7 @@ public class DefaultEventBusService implements EventBusService {
             });
         });
 
-        return ret.subscribeOn(scheduler); // ensure message delivery happens on vertx event loop, not sure but this by itself did not move the next above to the work loop
+        return ret; // ensure message delivery happens on vertx event loop, not sure but this by itself did not move the next above to the work loop
     }
 
     private DeliveryOptions createDeliveryOptions(Event<?> event){

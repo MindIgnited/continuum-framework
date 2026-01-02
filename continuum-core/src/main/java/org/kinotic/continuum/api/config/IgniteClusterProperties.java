@@ -45,10 +45,7 @@ public interface IgniteClusterProperties {
     String getLocalAddress();
     
     /**
-     * Comma-separated list of addresses for shared filesystem discovery.
-     * Format: "host1:port1,host2:port2,host3:port3"
-     * Only used when clusterDiscoveryType = "sharedfs"
-     * Example: "node1:47500,node2:47500,node3:47500"
+     * The path to a directory that is reachable by all nodes, that will be used for discovery data files.
      */
     String getSharedFsPath();
     
