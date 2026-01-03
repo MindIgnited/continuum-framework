@@ -50,6 +50,8 @@ import reactor.core.publisher.Mono;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -194,6 +196,16 @@ public class DefaultContinuum implements Continuum {
         info.append(igniteClusterProperties.toString());
 
         log.info(info.toString());
+
+        log.info("Testing add opens");
+
+        try {
+            Field field = SerializedLambda.class.getDeclaredField("capturingClass");
+            field.setAccessible(true);
+            log.info("Access successful");
+        } catch (Exception e) {
+            log.error("Access failed", e);
+        }
     }
 
     @Override

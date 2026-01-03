@@ -15,6 +15,6 @@
   logging:
     level:
       org:
-        kinotic: TRACE
+        kinotic: DEBUG
       io:
         vertx: DEBUG

@@ -50,7 +50,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import static org.apache.ignite.events.EventType.*;
 import static org.apache.ignite.failure.FailureType.*;
 
 /**
@@ -175,14 +174,11 @@ public class ContinuumIgniteConfig {
             cfg.setCacheConfiguration(cacheConfigs);
         }
 
-        // Settings needed for vertx cluster manager!
-        cfg.setIncludeEventTypes(EVT_CACHE_OBJECT_REMOVED, EVT_NODE_JOINED, EVT_NODE_LEFT, EVT_NODE_FAILED, EVT_NODE_SEGMENTED);
-
         cfg.setFailureHandler(failureHandler);
 
         cfg.setWorkDirectory(continuumProperties.getIgniteWorkDirectory());
 
-        cfg.setPeerClassLoadingEnabled(false);
+        cfg.setAsyncContinuationExecutor(Runnable::run);
 
         return cfg;
     }
