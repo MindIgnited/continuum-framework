@@ -56,6 +56,11 @@ public class DefaultRpcTestService implements RpcTestService{
     }
 
     @Override
+    public String concatString(String lhs, String rhs) {
+        return lhs + rhs;
+    }
+
+    @Override
     public Mono<String> firstArgParticipant(Participant participant, String suffix){
         return Mono.just(participant.getId() + suffix);
     }

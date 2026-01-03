@@ -55,6 +55,8 @@ public interface RpcTestService {
                                                     SimpleObject simpleObject,
                                                     List<String> listOfStrings);
 
+    String concatString(String lhs, String rhs);
+
     Mono<String> firstArgParticipant(Participant participant, String suffix);
 
     List<List<String>> getAListOfLists(List<List<String>> inputList);

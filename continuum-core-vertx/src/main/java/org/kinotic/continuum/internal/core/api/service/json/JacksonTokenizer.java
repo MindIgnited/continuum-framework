@@ -35,9 +35,9 @@ import java.util.function.Function;
 
 /**
  * NOTE: Copied directly from Spring Framework Web, since this is package private there.
+ *       And modified to support nested arrays when tokenizeArrayElements is true. Line 159.
  *       And since we have a copy we make small modifications to improve performance for our use case.
- *
- * {@link Function} to transform a JSON stream of arbitrary size, byte array
+ * Transforms a JSON stream of arbitrary size, byte array
  * chunks into a {@code Flux<TokenBuffer>} where each token buffer is a
  * well-formed JSON object with Jackson 3.x.
  *
@@ -154,8 +154,9 @@ final class JacksonTokenizer {
 			this.tokenBuffer.copyCurrentEvent(this.parser);
 		}
 
-		if (this.objectDepth == 0 && (this.arrayDepth == 0 || this.arrayDepth == 1) &&
-				(token == JsonToken.END_OBJECT || token.isScalarValue())) {
+		// Modified this line so Tokenizer will handle nested arrays properly
+		if (this.objectDepth == 0 && (this.arrayDepth == 0 || this.arrayDepth == 1)
+				&& (token == JsonToken.END_OBJECT || token.isScalarValue() || (token == JsonToken.END_ARRAY && this.arrayDepth == 1))) {
 			result.add(this.tokenBuffer);
 			this.tokenBuffer = createToken();
 		}
@@ -164,6 +165,7 @@ final class JacksonTokenizer {
 	private TokenBuffer createToken() {
         return TokenBuffer.forBuffering(this.parser, this.parser.objectReadContext());
 	}
+
 
 	private boolean isTopLevelArrayToken(JsonToken token) {
 		return this.objectDepth == 0 && ((token == JsonToken.START_ARRAY && this.arrayDepth == 1) ||

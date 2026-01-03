@@ -43,6 +43,8 @@ public interface RpcTestServiceProxy {
                                                           SimpleObject simpleObject,
                                                           List<String> listOfStrings);
 
+    Mono<String> concatString(String lhs, String rhs);
+
     Mono<String> firstArgParticipant(String suffix);
 
     Mono<List<List<String>>> getAListOfLists(List<List<String>> inputList);

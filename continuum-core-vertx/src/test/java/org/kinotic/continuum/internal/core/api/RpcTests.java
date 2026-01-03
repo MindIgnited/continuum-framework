@@ -82,6 +82,18 @@ public class RpcTests {
     }
 
     @Test
+    public void testSendTwoArgsReturnOne(){
+        String lhs = "Hello ";
+        String rhs = "Wat";
+        Mono<String> mono = rpcTestServiceProxy.concatString(lhs, rhs);
+
+        StepVerifier.create(mono)
+                    .expectNext(lhs + rhs)
+                    .expectComplete()
+                    .verify();
+    }
+
+    @Test
     public void testFirstArgParticipant(){
         String suffix = " Wat";
         Mono<String> mono = rpcTestServiceProxy.firstArgParticipant(suffix);
