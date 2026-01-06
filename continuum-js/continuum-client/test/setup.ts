@@ -15,7 +15,7 @@ export async function setup(project: TestProject) {
 
         const props = getProperties(readFileSync(path.resolve('../../', 'gradle.properties')))
 
-        container = await new GenericContainer(`kinotic/continuum-gateway-server:${props['continuumVersion']}`)
+        container = await new GenericContainer(`mindignited/continuum-gateway-server:${props['continuumVersion']}`)
             .withExposedPorts(58503)
             .withEnvironment({SPRING_PROFILES_ACTIVE: "clienttest"})
             .withPullPolicy(PullPolicy.alwaysPull())
