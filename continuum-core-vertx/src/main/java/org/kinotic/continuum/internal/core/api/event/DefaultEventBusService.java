@@ -22,6 +22,7 @@ import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.core.spi.cluster.RegistrationInfo;
+import io.vertx.core.tracing.TracingPolicy;
 import io.vertx.spi.cluster.ignite.impl.IgniteRegistrationInfo;
 import org.apache.commons.lang3.Validate;
 import org.apache.ignite.Ignite;
@@ -30,6 +31,7 @@ import org.kinotic.continuum.core.api.event.Event;
 import org.kinotic.continuum.core.api.event.EventBusService;
 import org.kinotic.continuum.core.api.event.EventConstants;
 import org.kinotic.continuum.core.api.event.ListenerStatus;
+import org.kinotic.continuum.internal.config.IgniteCacheConstants;
 import org.kinotic.continuum.internal.core.api.aignite.SubscriptionInfoCacheEntryEventFilter;
 import org.kinotic.continuum.internal.core.api.aignite.SubscriptionInfoCacheEntryListener;
 import org.kinotic.continuum.internal.utils.IgniteUtil;
@@ -83,6 +85,7 @@ public class DefaultEventBusService implements EventBusService {
         if(ignite != null) {
             subscriptionsCache = ignite.cache("__vertx.subs");
         }
+
     }
 
     @Override
@@ -121,7 +124,12 @@ public class DefaultEventBusService implements EventBusService {
 
             Context vertxContext = vertx.getOrCreateContext();
 
-            IgniteCache<IgniteRegistrationInfo, Boolean> cache = ignite.cache("__vertx.subs");
+            IgniteCache<IgniteRegistrationInfo, Boolean> cache = ignite.cache(IgniteCacheConstants.VERTX_SUBSCRIPTION_CACHE);
+
+            if(cache == null) {
+                sink.error(new IllegalStateException("The vertx subscription cache is not available"));
+                return;
+            }
 
             Factory<? extends CacheEntryListener<IgniteRegistrationInfo, Boolean>> listenerFactory =
                     FactoryBuilder.factoryOf(new SubscriptionInfoCacheEntryListener(sink, vertxContext));
@@ -231,6 +239,7 @@ public class DefaultEventBusService implements EventBusService {
 
     private DeliveryOptions createDeliveryOptions(Event<?> event){
         DeliveryOptions deliveryOptions = new DeliveryOptions();
+        deliveryOptions.setTracingPolicy(TracingPolicy.IGNORE);
         // fast path for MultiMapMetadataAdapter's
         if(event.metadata() instanceof MultiMapMetadataAdapter){
             deliveryOptions.setHeaders(((MultiMapMetadataAdapter)event.metadata()).getMultiMap());

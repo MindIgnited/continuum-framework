@@ -1,5 +1,5 @@
-import {ConnectedInfo, ConnectionInfo} from '../src'
-import {expect, inject} from 'vitest'
+import {ConnectedInfo, ConnectHeaders, ConnectionInfo} from '../src'
+import { expect, inject } from 'vitest'
 
 /**
  * Logs the failure of a promise and then rethrows the error
@@ -15,31 +15,28 @@ export async function logFailure<T>(promise: Promise<T>, message: string): Promi
     }
 }
 
-export function validateConnectedInfo(connectedInfo: ConnectedInfo, roles?: string[]): void{
+export function validateConnectedInfo(connectedInfo: ConnectedInfo, roles?: string[]): void {
     expect(connectedInfo).toBeDefined()
     expect(connectedInfo.sessionId).toBeDefined()
     expect(connectedInfo.participant.id).toBeDefined()
     expect(connectedInfo.participant.roles).toBeDefined()
     expect(connectedInfo.participant.roles.length).toBe(1)
-    if(roles){
+    if (roles) {
         expect(connectedInfo.participant.roles).toEqual(roles)
-    }else {
+    } else {
         expect(connectedInfo.participant.roles[0]).toBe('ADMIN')
     }
 }
 
-export async function initContinuumGateway(): Promise<{
-                                                        connectionInfo: ConnectionInfo
-                                                      }> {
+export function createConnectionInfo(disableStickySession: boolean = false,
+                                           connectHeaders?: ConnectHeaders | (() => Promise<ConnectHeaders>)): ConnectionInfo {
     const connectionInfo = new ConnectionInfo()
     // @ts-ignore
     connectionInfo.host = inject('CONTINUUM_HOST')
     // @ts-ignore
     connectionInfo.port = inject('CONTINUUM_PORT')
     connectionInfo.maxConnectionAttempts = 3
-    connectionInfo.connectHeaders = {login: 'guest', passcode: 'guest'}
-    console.log(`Continuum Gateway running at ${connectionInfo.host}:${connectionInfo.port}`)
-    return {
-        connectionInfo
-    }
+    connectionInfo.connectHeaders = connectHeaders || { login: 'guest', passcode: 'guest' }
+    connectionInfo.disableStickySession = disableStickySession
+    return connectionInfo
 }

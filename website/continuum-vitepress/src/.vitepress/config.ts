@@ -5,6 +5,10 @@ export default defineConfig({
   title: "Continuum",
   description: "Insanely versatile IoT and Microservice framework",
   base: '/continuum-framework/website/',
+  ignoreDeadLinks: [
+    // ignore all localhost links
+    /^https?:\/\/localhost/,
+  ],
   themeConfig: {
     logo: '/icon.png',
     // https://vitepress.vuejs.org/reference/default-theme-config
@@ -28,7 +32,7 @@ export default defineConfig({
 
 function nav() {
   return [
-    { text: 'Guide', link: '/guide/overview', activeMatch: '/guide/' },
+    { text: 'Guide', link: '/guide/introduction', activeMatch: '/guide/' },
     {
       text: 'Reference',
       link: '/reference/continuum-config',
@@ -44,17 +48,26 @@ function nav() {
 function sidebarGuide() {
   return [
     {
-      text: 'Introduction',
+      text: 'Getting Started',
       items: [
-        { text: 'What is Continuum?', link: '/guide/overview' },
-        { text: 'Getting Started', link: '/guide/getting-started' }
+        { text: 'Introduction', link: '/guide/introduction' },
+        { text: 'Quick Start', link: '/guide/quick-start' }
       ]
     },
     {
-      text: 'Details',
+      text: 'Core Concepts',
       items: [
-        { text: 'Command Line', link: '/guide/cli-overview' },
-        { text: 'Services', link: '/guide/services' }
+        { text: 'Java Services', link: '/guide/java-services' },
+        { text: 'Clients', link: '/guide/clients' },
+        { text: 'RPC Patterns', link: '/guide/rpc-patterns' },
+        // { text: 'Events & Streaming', link: '/guide/events-streaming' } remove until we have a higher level API, this functionality is what RPC is built on so direct usage of this could cause confusion
+      ]
+    },
+    {
+      text: 'Configuration & Advanced',
+      items: [
+        { text: 'Advanced Topics', link: '/guide/advanced' },
+        { text: 'Examples', link: '/guide/examples' }
       ]
     }
   ]
@@ -65,7 +78,7 @@ function sidebarReference() {
     {
       text: 'Reference',
       items: [
-        { text: 'Continuum Config', link: '/reference/continuum-config' },
+        { text: 'Configuration', link: '/reference/continuum-config' },
         { text: 'C3 IDL', link: '/reference/c3-idl' }
       ]
     },

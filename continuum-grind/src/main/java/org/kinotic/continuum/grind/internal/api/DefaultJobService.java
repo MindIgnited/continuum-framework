@@ -17,16 +17,18 @@
 
 package org.kinotic.continuum.grind.internal.api;
 
-import org.kinotic.continuum.grind.api.*;
 import org.apache.commons.lang3.Validate;
-import org.kinotic.continuum.grind.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kinotic.continuum.grind.api.DiagnosticLevel;
+import org.kinotic.continuum.grind.api.JobDefinition;
+import org.kinotic.continuum.grind.api.JobService;
+import org.kinotic.continuum.grind.api.Result;
+import org.kinotic.continuum.grind.api.ResultOptions;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
+
 import reactor.core.publisher.Flux;
 
 /**
@@ -35,8 +37,6 @@ import reactor.core.publisher.Flux;
  */
 @Component
 public class DefaultJobService implements JobService, ApplicationContextAware {
-
-    private static final Logger log = LoggerFactory.getLogger(DefaultJobService.class);
 
     private GenericApplicationContext applicationContext;
 

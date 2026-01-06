@@ -84,13 +84,4 @@ public class DefaultSessionInformationService implements SessionInformationServi
         return ret.subscribeOn(scheduler);
     }
 
-    private void safeCloseCursor(QueryCursor<?> cursor){
-        try {
-            if(cursor != null) {
-                cursor.close();
-            }
-        } catch (Exception ex) {
-            log.warn("Exception closing continuous query",ex);
-        }
-    }
 }

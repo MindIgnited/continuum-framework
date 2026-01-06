@@ -2,7 +2,7 @@ import {v4 as uuidv4} from 'uuid'
 import {afterAll, beforeAll, describe, expect, it} from 'vitest'
 import {WebSocket} from 'ws'
 import {ConnectedInfo, Continuum, Event, EventConstants, IEvent} from '../src'
-import {initContinuumGateway, logFailure, validateConnectedInfo} from './TestHelper'
+import {createConnectionInfo, logFailure, validateConnectedInfo} from './TestHelper'
 
 // This is required when running Continuum from node
 Object.assign(global, { WebSocket})
@@ -10,7 +10,7 @@ Object.assign(global, { WebSocket})
 describe('Continuum RPC Tests', () => {
 
     beforeAll(async () => {
-        const {connectionInfo} = await initContinuumGateway()
+        const connectionInfo = createConnectionInfo()
         let connectedInfo: ConnectedInfo = await logFailure(Continuum.connect(connectionInfo), 'Failed to connect to Continuum Gateway')
         validateConnectedInfo(connectedInfo)
     }, 1000 * 60 * 10) // 10 minutes
@@ -21,7 +21,7 @@ describe('Continuum RPC Tests', () => {
 
     it('should fail invalid service request', async () => {
         const toSend: IEvent = new Event('srv://org.kinotic.continuum.gatewayserver.clienttest.ITestService/testMethodWithString')
-        toSend.setHeader(EventConstants.REPLY_TO_HEADER, null)
+        toSend.setHeader(EventConstants.REPLY_TO_HEADER, '')
         toSend.setHeader(EventConstants.CONTENT_TYPE_HEADER, EventConstants.CONTENT_JSON)
         const correlationId = uuidv4()
         toSend.setHeader(EventConstants.CORRELATION_ID_HEADER, correlationId)

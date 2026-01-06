@@ -17,7 +17,9 @@
 
 package org.kinotic.continuum.internal.core.api;
 
-import io.opentelemetry.api.OpenTelemetry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.Validate;
 import org.kinotic.continuum.api.Continuum;
 import org.kinotic.continuum.api.annotations.Proxy;
 import org.kinotic.continuum.core.api.RpcServiceProxyHandle;
@@ -26,7 +28,6 @@ import org.kinotic.continuum.core.api.event.EventBusService;
 import org.kinotic.continuum.core.api.service.ServiceDescriptor;
 import org.kinotic.continuum.core.api.service.ServiceFunctionInstanceProvider;
 import org.kinotic.continuum.core.api.service.ServiceIdentifier;
-import org.kinotic.continuum.internal.ServiceRegistrationBeanPostProcessor;
 import org.kinotic.continuum.internal.core.api.service.invoker.ArgumentResolverComposite;
 import org.kinotic.continuum.internal.core.api.service.invoker.ExceptionConverterComposite;
 import org.kinotic.continuum.internal.core.api.service.invoker.ReturnValueConverterComposite;
@@ -35,19 +36,16 @@ import org.kinotic.continuum.internal.core.api.service.rpc.DefaultRpcServiceProx
 import org.kinotic.continuum.internal.core.api.service.rpc.RpcArgumentConverter;
 import org.kinotic.continuum.internal.core.api.service.rpc.RpcArgumentConverterResolver;
 import org.kinotic.continuum.internal.core.api.service.rpc.RpcReturnValueHandlerFactory;
-import io.vertx.core.Vertx;
-import org.apache.commons.lang3.Validate;
 import org.kinotic.continuum.internal.utils.ContinuumUtil;
 import org.kinotic.continuum.internal.utils.MetaUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
-import reactor.core.publisher.Mono;
 
-import java.util.concurrent.ConcurrentHashMap;
+import io.opentelemetry.api.OpenTelemetry;
+import io.vertx.core.Vertx;
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -56,7 +54,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DefaultServiceRegistry implements ServiceRegistry {
 
-    private static final Logger log = LoggerFactory.getLogger(ServiceRegistrationBeanPostProcessor.class);
     private final ConcurrentHashMap<ServiceIdentifier, ServiceInvocationSupervisor> supervisors = new ConcurrentHashMap<>();
     // These converters are used by ServiceInvocationSupervisor
     @Autowired

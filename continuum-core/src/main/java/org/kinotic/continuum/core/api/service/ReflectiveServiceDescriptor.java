@@ -51,7 +51,10 @@ class ReflectiveServiceDescriptor implements ServiceDescriptor{
             if(functionMap.containsKey(methodName)){
                 // in some cases such as with default methods we may actually get the same method multiple times check for that.
                 if(!functionMap.get(methodName).invocationMethod().equals(method)){
-                    log.warn(serviceClass.getName() + " has overloaded method " + methodName + " overloading is not supported. \n "+method.toGenericString()+" will be ignored");
+                    log.warn("{} has overloaded method {} overloading is not supported. \n {} will be ignored",
+                             serviceClass.getName(),
+                             methodName,
+                             method.toGenericString());
                 }
             }else{
                 functionMap.put(methodName,  ServiceFunction.create(methodName, method));

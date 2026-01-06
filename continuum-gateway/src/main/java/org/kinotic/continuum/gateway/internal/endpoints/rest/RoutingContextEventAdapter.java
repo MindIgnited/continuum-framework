@@ -70,7 +70,7 @@ class RoutingContextEventAdapter implements Event<byte[]> {
 
     @Override
     public byte[] data() {
-        return routingContext.getBody().getBytes();
+        return routingContext.body().buffer().getBytes();
     }
 
 }

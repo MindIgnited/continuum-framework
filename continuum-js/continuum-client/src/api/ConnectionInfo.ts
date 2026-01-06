@@ -52,7 +52,8 @@ export class ConnectionInfo extends ServerInfo {
      * If true, the session will not be kept alive after the connection is established and then disrupted.
      * If false, the session will be kept alive after the connection is established and then disrupted, for a period of time.
      */
-    disableStickySession?: boolean | null 
+    disableStickySession?: boolean | null
+
 }
 
 

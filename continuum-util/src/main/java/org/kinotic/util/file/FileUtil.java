@@ -52,7 +52,10 @@ public class FileUtil {
      */
     public static void copyFileLinesInReverse(File sourceFile, OutputStream destinationStream) throws IOException {
         Charset charset = Charset.defaultCharset();
-        try(ReversedLinesFileReader fileReader = new ReversedLinesFileReader(sourceFile, charset)) {
+        try(ReversedLinesFileReader fileReader = ReversedLinesFileReader.builder()
+                .setPath(sourceFile.toPath())
+                .setCharset(charset)
+                .get()) {
             String line = fileReader.readLine();
             while (line != null) {
                 //noinspection StringConcatenationInLoop

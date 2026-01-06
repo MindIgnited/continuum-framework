@@ -39,7 +39,6 @@ import org.springframework.stereotype.Component;
 public class DefaultContinuumProperties implements ContinuumProperties {
 
     public static long DEFAULT_SESSION_TIMEOUT = 1000 * 60 * 30;
-    public static String DEFAULT_DISCOVERY = "sharedfs";
 
     private boolean debug = false;
     private boolean disableClustering = false;
@@ -49,12 +48,7 @@ public class DefaultContinuumProperties implements ContinuumProperties {
     private String eventBusClusterPublicHost = null;
     private String igniteWorkDirectory = "/tmp/ignite";
     private long sessionTimeout = DEFAULT_SESSION_TIMEOUT;
-    /**
-     * Sets the mode used for discovering other nodes within the cluster must be one of the following.
-     * sharedfs : Uses TCP discovery with a shared filesystems
-     * zookeeper : Uses Zookeeper discovery
-     */
-    private String discovery = DEFAULT_DISCOVERY;
+
     private long maxOffHeapMemory = DataStorageConfiguration.DFLT_DATA_REGION_MAX_SIZE;
     private int maxEventPayloadSize = 1024 * 1024 * 100; // 100MB
     private int maxNumberOfCoresToUse = Math.max(Runtime.getRuntime().availableProcessors(), 1);
@@ -68,12 +62,12 @@ public class DefaultContinuumProperties implements ContinuumProperties {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("debug", debug)
-                .append("disableClustering", disableClustering)
-                .append("sessionTimeout", sessionTimeout)
-                .append("discovery", discovery)
-                .append("maxOffHeapMemory", maxOffHeapMemory)
-                .toString();
+        ToStringBuilder sb = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                                    .append("debug", debug)
+                                    .append("disableClustering", disableClustering)
+                                    .append("sessionTimeout", sessionTimeout)
+                                    .append("maxOffHeapMemory", maxOffHeapMemory);
+
+        return sb.toString();
     }
 }

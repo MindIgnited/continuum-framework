@@ -17,13 +17,12 @@ dependencies {
     // vertx
     api 'io.vertx:vertx-core'
     implementation 'io.vertx:vertx-auth-common'
-    implementation 'com.github.rworsnop:vertx-beans'
-
 
     // Apache Ignite
     implementation 'io.vertx:vertx-ignite'
     implementation 'org.apache.ignite:ignite-core'
     implementation 'org.apache.ignite:ignite-calcite'
+	implementation 'org.apache.ignite:ignite-kubernetes' // support for kubernetes discovery
     implementation 'org.apache.ignite:ignite-spring'
     implementation 'org.apache.ignite:ignite-slf4j'
     implementation 'javax.cache:cache-api'

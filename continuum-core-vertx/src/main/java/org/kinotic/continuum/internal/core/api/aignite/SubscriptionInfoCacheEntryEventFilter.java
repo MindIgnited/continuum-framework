@@ -17,16 +17,17 @@
 
 package org.kinotic.continuum.internal.core.api.aignite;
 
-import io.vertx.spi.cluster.ignite.impl.IgniteNodeInfo;
-import io.vertx.spi.cluster.ignite.impl.IgniteRegistrationInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
 
 import javax.cache.event.CacheEntryEvent;
 import javax.cache.event.CacheEntryEventFilter;
 import javax.cache.event.CacheEntryListenerException;
-import java.io.Serializable;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.vertx.spi.cluster.ignite.impl.IgniteNodeInfo;
+import io.vertx.spi.cluster.ignite.impl.IgniteRegistrationInfo;
 
 /**
  * {@link CacheEntryEventFilter} for {@link IgniteNodeInfo}

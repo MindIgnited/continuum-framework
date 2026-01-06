@@ -4,6 +4,9 @@
 /build/
 /buildSrc/build/
 !gradle/wrapper/gradle-wrapper.jar
+bin/
+.idea/
+/allure-report/
 
 # User-specific stuff
 .idea/**/workspace.xml
@@ -67,5 +70,5 @@ continuum-gateway-server/ignite/
 
 continuum-cloud/ignite/
 
-.idea/
-/allure-report/
+continuum-js/continuum-client/allure-results/
+

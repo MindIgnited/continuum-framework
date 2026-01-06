@@ -1,4 +1,4 @@
-import {Continuum, IServiceProxy} from '../src'
+import {Continuum, ContinuumSingleton, IServiceProxy} from '../src'
 
 export interface ITestService {
 
@@ -10,12 +10,13 @@ export interface ITestService {
 
 }
 
-class TestService implements ITestService {
+export class TestService implements ITestService {
 
     private readonly serviceProxy: IServiceProxy
 
-    constructor() {
-        this.serviceProxy = Continuum.serviceProxy('org.kinotic.continuum.gatewayserver.clienttest.ITestService')
+    constructor(continuum?: ContinuumSingleton) {
+        let toUse = continuum || Continuum
+        this.serviceProxy = toUse.serviceProxy('org.kinotic.continuum.gatewayserver.clienttest.ITestService')
     }
 
     testMethodWithString(value: string): Promise<string> {

@@ -61,7 +61,7 @@ public class ServiceRegistrationBeanPostProcessor implements DestructionAwareBea
 
             serviceRegistry.register(serviceIdentifier, clazz, bean)
                            .subscribe(null,
-                                      throwable -> log.error("Error Registering service "+ serviceIdentifier, throwable));
+                                      throwable -> log.error("Error Registering service {}", serviceIdentifier, throwable));
         });
         return bean;
     }
@@ -74,7 +74,7 @@ public class ServiceRegistrationBeanPostProcessor implements DestructionAwareBea
 
             serviceRegistry.unregister(serviceIdentifier)
                            .subscribe(null,
-                                      throwable -> log.error("Error Un-Registering service "+ serviceIdentifier, throwable));
+                                      throwable -> log.error("Error Un-Registering service {}", serviceIdentifier, throwable));
         });
     }
 

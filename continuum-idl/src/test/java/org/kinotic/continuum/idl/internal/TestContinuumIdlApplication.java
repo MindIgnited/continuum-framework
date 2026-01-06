@@ -17,7 +17,6 @@
 
 package org.kinotic.continuum.idl.internal;
 
-import org.kinotic.continuum.api.annotations.EnableContinuum;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -27,6 +26,5 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @SpringBootApplication
 @EnableConfigurationProperties
-@EnableContinuum
 public class TestContinuumIdlApplication {
 }

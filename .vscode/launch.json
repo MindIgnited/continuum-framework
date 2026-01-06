@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // "command": "pnpm test -- DisableStickySession.test.ts",
+            "command": "pnpm test -- ContinuumUnavailable.test.ts",
+            "name": "Start Continuum Client Tests",
+            "request": "launch",
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}/continuum-js/continuum-client",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        {
+            "type": "java",
+            "name": "ContinuumGatewayServerApplication",
+            "request": "launch",
+            "mainClass": "org.kinotic.continuum.gatewayserver.ContinuumGatewayServerApplication",
+            "projectName": "continuum-gateway-server",
+            "vmArgs": "-XX:MaxDirectMemorySize=1g -Xmx4096m -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC -cp ${workspaceFolder}/continuum-gateway-server/src/main/resources",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "development,local",
+                "JAVA_TOOL_OPTIONS": "--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED --add-opens=jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED --add-opens=java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
+            }
+        }
+    ]
+}

@@ -1,0 +1,393 @@
+# Continuum Core Framework - Cursor Rules
+
+## Overview
+Continuum Core is a Java-based framework that provides service discovery, RPC capabilities, event-driven architecture, CRUD operations, security, and logging management. It's built on Spring Boot with reactive programming support using Project Reactor.
+
+## Architecture Layers
+
+### 1. High-Level API (`org.kinotic.continuum.api`)
+**Purpose**: Public interfaces for application developers
+**Usage**: Can be used directly by Continuum applications
+**Spring Scanning**: NOT automatically scanned by Spring
+
+**Key Interfaces**:
+- `Continuum`: Server information and application metadata
+- `Identifiable<T>`: Generic interface for entities with unique IDs
+- `Participant`: Security context for authenticated users
+- `SecurityService`: Authentication and authorization services
+- `LogManager`: Runtime logging configuration
+
+**Annotations**:
+- `@EnableContinuum`: Enables Continuum in Spring Boot applications
+- `@Publish`: Marks interfaces as remotely accessible services
+- `@Proxy`: Indicates interfaces that can be proxied remotely
+- `@Scope`: Defines service scope
+- `@Version`: Specifies service versioning
+
+### 2. Low-Level API (`org.kinotic.continuum.core.api`)
+**Purpose**: Framework implementation interfaces
+**Usage**: Should only be used by framework implementers
+**Spring Scanning**: NOT automatically scanned by Spring
+
+**Service Registry**:
+- `ServiceRegistry`: Service registration and proxy creation
+- `ServiceDirectory`: Service discovery
+- `ClusterService`: Cluster management
+
+**CRUD Operations**:
+- `CrudService<T, ID>`: Generic CRUD interface with pagination
+- `Page<T>`, `Pageable`: Pagination support
+- `SearchCriteria`, `Sort`: Search and sorting capabilities
+
+**Event System**:
+- `EventService`: Unified event facade
+- `EventBusService`: Transient event messaging
+- `EventStreamService`: Persistent event streams
+- `CRI`: Continuum Resource Identifier for routing
+
+### 3. Internal Implementation (`org.kinotic.continuum.internal`)
+**Purpose**: Framework internals
+**Usage**: Should only be used by framework implementers
+**Spring Scanning**: Automatically scanned by Spring
+
+**Key Components**:
+- **Service Registration**: `ProxyRegistrationBeanDefinitionRegistryPostProcessor` for automatic proxy creation
+- **Service Invocation**: `ServiceInvocationSupervisor` for service execution management
+- **RPC Handling**: `RpcServiceProxyBeanFactory` for proxy bean creation
+- **Event Processing**: Vert.x-based event bus and stream implementations
+- **Clustering**: Ignite-based cluster management with Vert.x integration
+
+## Key Dependencies
+
+### Core Dependencies
+- **Spring Boot**: Application framework and dependency injection
+- **Project Reactor**: Reactive programming (Mono/Flux)
+- **Reactive Streams**: Reactive interfaces specification
+- **Jackson**: JSON processing annotations
+
+### Optional Dependencies
+- **JSR-305**: Null safety annotations
+- **FindBugs**: Static analysis support
+
+## Implementation Technologies (continuum-core-vertx)
+
+### Core Technologies
+- **Eclipse Vert.x**: Event-driven, non-blocking I/O framework
+  - `vertx-core`: Core Vert.x functionality
+  - `vertx-auth-common`: Authentication utilities
+  - `vertx-ignite`: Ignite cluster manager integration
+
+- **Apache Ignite**: In-memory computing platform
+  - `ignite-core`: Core Ignite functionality
+  - `ignite-calcite`: SQL query engine
+  - `ignite-spring`: Spring integration
+  - `ignite-slf4j`: Logging integration
+  - `javax.cache`: JCache API implementation
+
+### JSON Processing
+- **Jackson**: Comprehensive JSON processing
+  - `jackson-core`: Core JSON processing
+  - `jackson-databind`: Data binding
+  - `jackson-datatype-jdk8`: Java 8 time types support
+  - `jackson-datatype-jsr310`: JSR-310 time types support
+
+### Additional Dependencies
+- **Apache Groovy**: Dynamic language support for JSON schema converters
+- **Apache Commons IO**: File and stream utilities
+- **Caffeine**: High-performance caching library
+- **Awaitility**: Testing utilities for async operations
+
+## Design Patterns
+
+### 1. Service-Oriented Architecture
+- Services are registered with unique identifiers
+- Remote access through proxy interfaces
+- Support for different content types
+- **Implementation**: Vert.x-based service registry with Ignite clustering
+
+### 2. Reactive Programming
+- All async operations return Mono/Flux
+- Non-blocking I/O throughout
+- Backpressure handling via Reactive Streams
+- **Implementation**: Project Reactor with Vert.x event loop integration
+
+### 3. Event-Driven Architecture
+- Two event models: transient (event bus) and persistent (streams)
+- CRI-based routing system
+- Support for both fire-and-forget and acknowledged messaging
+- **Implementation**: Vert.x EventBus for transient events, Ignite streams for persistence
+
+### 4. Generic CRUD Operations
+- Type-safe entity operations
+- Flexible pagination (offset and cursor-based)
+- Advanced search and sorting capabilities
+- **Implementation**: Jackson-based serialization with custom type resolvers
+
+### 5. Clustering & Distribution
+- **Implementation**: Apache Ignite with Vert.x cluster manager
+- Shared file system discovery for node coordination
+- Distributed caching and event distribution
+- Automatic failover and load balancing
+
+## Security Model
+
+### Participant-Based Security
+- `Participant` interface for user context
+- Multi-tenant support via `tenantId`
+- Role-based access control via `roles`
+- Metadata support for additional context
+
+### Service Security
+- Services can be scoped to specific participants
+- Version-based service access control
+- Namespace isolation for services
+
+## Configuration
+
+### Continuum Properties
+- `igniteWorkDirectory`: Work directory for Ignite
+- `debug`: Enable debug mode for additional information
+- `disableClustering`: Toggle clustering functionality
+- `eventBusClusterPort`: Port for event bus clustering
+- `sessionTimeout`: Session timeout configuration
+- `maxOffHeapMemory`: Memory limits
+- `maxEventPayloadSize`: Event payload size limits
+- `maxNumberOfCoresToUse`: CPU core limits
+
+### Implementation-Specific Configuration
+
+#### Vert.x Configuration
+- **Clustering**: Conditional clustering based on `continuum.disableClustering`
+- **Event Bus**: Configurable port and host binding
+- **Thread Management**: Vert.x event loop integration with Spring
+
+#### Ignite Configuration
+- **Discovery**: TCP discovery with shared filesystem IP finder
+- **Data Storage**: Configurable memory regions and cache configurations
+- **Failure Handling**: Different handlers for development vs production profiles
+- **SQL Engine**: Calcite-based query engine for data operations
+
+## Best Practices
+
+### 1. Service Development
+- Use `@Publish` annotation for remote services
+- Implement `Identifiable<T>` for entity classes
+- Provide meaningful service names and versions
+- Use appropriate scoping for multi-tenant applications
+
+### 2. Event Handling
+- Choose between event bus (transient) and streams (persistent)
+- Use CRI for consistent resource identification
+- Handle backpressure in event consumers
+- Implement proper error handling for event operations
+
+### 3. CRUD Operations
+- Extend `CrudService<T, ID>` for entity services
+- Use appropriate pagination strategies
+- Implement search functionality where needed
+- Handle async operations properly with CompletableFuture
+
+### 4. Security Implementation
+- Store sensitive data outside of Participant objects
+- Implement proper role-based access control
+- Use tenant isolation for multi-tenant applications
+- Validate participant context in service methods
+
+## Common Use Cases
+
+### 1. Creating a Remote Service
+```java
+@Publish
+public interface MyService {
+    Mono<String> doSomething(String input);
+}
+```
+
+### 2. Implementing CRUD Operations
+```java
+@Service
+public class MyEntityService implements CrudService<MyEntity, String> {
+    // Implement CRUD methods
+}
+```
+
+### 3. Publishing Events
+```java
+@Autowired
+private EventService eventService;
+
+public void publishEvent() {
+    Event<byte[]> event = new DefaultEvent<>(CRI.create("srv://myService"), "data".getBytes());
+    eventService.send(event).subscribe();
+}
+```
+
+### 4. Service Discovery
+```java
+@Autowired
+private ServiceRegistry serviceRegistry;
+
+public void callRemoteService() {
+    RpcServiceProxyHandle<MyService> proxy = 
+        serviceRegistry.serviceProxy(MyService.class);
+    proxy.get().doSomething("input").subscribe();
+}
+```
+
+## Implementation Details
+
+### Service Registry Implementation
+- **DefaultServiceRegistry**: Manages service registration and proxy creation
+- **ServiceInvocationSupervisor**: Handles service execution with argument resolution
+- **RpcArgumentConverter**: Converts RPC arguments between different content types
+- **OpenTelemetry Integration**: Built-in observability and tracing support
+
+### Event System Implementation
+- **DefaultEventBusService**: Vert.x EventBus-based transient messaging
+- **DefaultEventStreamService**: Ignite-based persistent event streams
+- **MessageEventAdapter**: Converts Vert.x messages to Continuum events
+- **Metadata Handling**: MultiMap-based metadata for efficient header processing
+
+### Clustering Implementation
+- **IgniteClusterManager**: Vert.x cluster manager using Apache Ignite
+- **Shared Filesystem Discovery**: Node discovery via shared filesystem
+- **Subscription Tracking**: Distributed subscription management via Ignite caches
+- **Automatic Failover**: Built-in high availability and load balancing
+
+## Error Handling
+
+### Exception Hierarchy
+- `ContinuumException`: Base exception class
+- `AuthenticationException`: Authentication failures
+- `AuthorizationException`: Authorization failures
+- `RpcInvocationException`: RPC call failures
+- `RpcMissingMethodException`: Method not found
+- `RpcMissingServiceException`: Service not found
+
+### Error Response
+- Debug mode provides detailed error information
+- Production mode limits error details for security
+- Proper exception propagation through reactive streams
+
+## Performance Considerations
+
+### 1. Reactive Programming
+- Use appropriate Mono/Flux types
+- Avoid blocking operations in reactive chains
+- Implement proper backpressure handling
+- **Vert.x Integration**: Leverage Vert.x event loop for non-blocking operations
+
+### 2. Service Registration
+- Register services early in application lifecycle
+- Use appropriate service identifiers
+- Consider service versioning for compatibility
+- **Proxy Management**: Automatic proxy creation via Spring BeanFactoryPostProcessor
+
+### 3. Event Processing
+- Choose appropriate event model (bus vs stream)
+- Implement efficient event filtering
+- Use proper CRI patterns for routing
+- **Clustering**: Distributed event processing with Ignite-based clustering
+
+### 4. Memory Management
+- **Ignite Configuration**: Tune data region sizes and memory allocation
+- **Caching Strategy**: Use Caffeine for local caching where appropriate
+- **Serialization**: Efficient Jackson-based serialization with custom type resolvers
+
+### 5. Thread Management
+- **Vert.x Event Loop**: Single-threaded event loop for non-blocking operations
+- **Reactor Schedulers**: Proper scheduler selection for different operation types
+- **Blocking Operations**: Use `vertx.executeBlocking()` for CPU-intensive tasks
+
+## Testing
+
+### Test Configuration
+- Use `application-test.yml` for test-specific settings
+- Disable clustering in test environments
+- Mock external dependencies appropriately
+
+### Test Utilities
+- Use reactive testing utilities for Mono/Flux testing
+- Test both success and failure scenarios
+- Verify proper error propagation
+
+## Migration and Compatibility
+
+### Version Management
+- Use `@Version` annotation for service versioning
+- Implement backward compatibility where needed
+- Plan for service evolution
+
+### Breaking Changes
+- Document breaking changes clearly
+- Provide migration guides
+- Use semantic versioning principles
+
+## Technology Stack Deep Dive
+
+### Eclipse Vert.x
+- **Purpose**: Event-driven, non-blocking I/O framework
+- **Role in Continuum**: 
+  - Event bus for transient messaging
+  - HTTP server/client capabilities
+  - Cluster management via Ignite
+  - Non-blocking I/O operations
+- **Integration**: Spring Boot autoconfiguration with conditional clustering
+
+### Apache Ignite
+- **Purpose**: In-memory computing and caching platform
+- **Role in Continuum**:
+  - Distributed caching for service discovery
+  - Event stream persistence
+  - Cluster coordination and node discovery
+  - SQL query engine for data operations
+- **Configuration**: Environment-specific failure handlers and memory management
+
+### Project Reactor
+- **Purpose**: Reactive programming library
+- **Role in Continuum**:
+  - Reactive streams implementation
+  - Backpressure handling
+  - Async operation composition
+  - Integration with Spring WebFlux
+- **Schedulers**: Vert.x-based schedulers for event loop operations
+
+### Jackson
+- **Purpose**: JSON processing and serialization
+- **Role in Continuum**:
+  - RPC argument serialization/deserialization
+  - Custom type resolvers for polymorphic types
+  - Efficient binary data handling
+  - Support for Java 8+ time types
+
+## Session Management & Connection Handling
+
+### Session Lifecycle
+- **Creation**: Sessions are created when clients authenticate via `SessionManager.create()`
+- **Storage**: Sessions stored in Ignite distributed cache with configurable TTL
+- **Identification**: Unique 16-byte session IDs generated using cryptographically secure PRNG
+- **Metadata**: Includes participant info, reply-to ID, and last used timestamp
+
+### Session Expiration & Cleanup
+- **TTL Configuration**: `continuum.sessionTimeout` property (default: 30 minutes)
+- **Touch Mechanism**: Sessions are "touched" every half the timeout interval to extend lifetime
+- **Automatic Cleanup**: Ignite cache with `TouchedExpiryPolicy` automatically removes expired sessions
+- **Manual Cleanup**: Sessions can be explicitly removed via `SessionManager.removeSession()`
+
+### Connection Disconnection Handling
+- **Explicit Disconnection**: When clients send disconnect frames, sessions are immediately removed
+- **Network Issues**: Sessions are NOT automatically removed for network disconnections to allow reconnection
+- **Timer Management**: Vert.x timers are used to periodically update session activity
+- **Resource Cleanup**: All subscriptions and timers are properly cleaned up on disconnection
+
+### Session Security Features
+- **Path-Based Authorization**: Sessions control which CRI patterns clients can send/subscribe to
+- **Temporary Permissions**: Reply-to addresses are temporarily allowed for service responses
+- **Participant Scoping**: Sessions are scoped to specific participants with role-based access
+- **Multi-Tenant Support**: Sessions include tenant isolation for multi-tenant applications
+
+### Implementation Details
+- **DefaultSessionManager**: Manages session lifecycle with Ignite backend
+- **IgniteSession**: Distributed session implementation with automatic expiration
+- **DefaultSession**: Local session implementation for single-node deployments
+- **EndpointConnectionHandler**: Gateway-level connection management and session coordination

@@ -17,64 +17,36 @@
 
 package org.kinotic.continuum.internal.config;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxBuilder;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.EventBusOptions;
+import io.vertx.core.file.FileSystem;
+import io.vertx.core.shareddata.SharedData;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
-import io.vertxbeans.VertxBeans;
 import org.apache.ignite.Ignite;
-import org.apache.ignite.internal.util.typedef.internal.U;
 import org.kinotic.continuum.api.config.ContinuumProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.core.ReactiveAdapterRegistry;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 
 /**
  * Created by navid on 4/16/15.
  */
 @Configuration
-@Import(VertxBeans.class)
 public class ContinuumVertxConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(ContinuumVertxConfig.class);
-
     @Bean
     @ConditionalOnProperty(
-        value="continuum.disableClustering",
-        havingValue = "false",
-        matchIfMissing = true)
-    public EventBusOptions eventBusOptions(ContinuumProperties properties){
-        EventBusOptions ret = new EventBusOptions();
-        ret.setPort(properties.getEventBusClusterPort());
-        ret.setHost(properties.getEventBusClusterHost());
-
-        if(properties.getEventBusClusterPublicPort() != -1) {
-            ret.setClusterPublicPort(properties.getEventBusClusterPublicPort());
-        }
-        ret.setClusterPublicHost(properties.getEventBusClusterPublicHost());
-
-        if(properties.getEventBusClusterHost() == null) { // TODO: look into removing this logic all together
-            for (String ip : U.allLocalIps()) {
-                if (!ip.startsWith("169.254")) { // avoid binding to AWS internal net
-                    log.info("Setting vertx Cluster host to {}", ip);
-                    ret.setHost(ip);
-                    break;
-                }
-            }
-        }
-        return ret;
-    }
-
-    @Bean
-    @ConditionalOnProperty(
-        value="continuum.disableClustering",
-        havingValue = "false",
-        matchIfMissing = true)
+            value="continuum.disableClustering",
+            havingValue = "false",
+            matchIfMissing = true)
     public ClusterManager clusterManager(Ignite ignite){
         if(ignite == null){
             throw new IllegalStateException("Something is wrong with the configuration Ignite is null");
@@ -85,12 +57,50 @@ public class ContinuumVertxConfig {
         return new IgniteClusterManager(ignite);
     }
 
-    // This is configured in org.kinotic.continuum.internal.api.DefaultContinuum
-    // It is done there in case this bean is supplied by spring directly
-    @ConditionalOnMissingBean
     @Bean
-    public ReactiveAdapterRegistry reactiveAdapterRegistry(){
-        return new ReactiveAdapterRegistry();
+    public EventBus eventBus(Vertx vertx) {
+        return vertx.eventBus();
+    }
+
+    @Bean
+    public FileSystem fileSystem(Vertx vertx) {
+        return vertx.fileSystem();
+    }
+
+    @Bean
+    public SharedData sharedData(Vertx vertx) {
+        return vertx.sharedData();
+    }
+
+    @Bean
+    public Vertx vertx(ContinuumProperties properties,
+                       @Autowired(required = false) ClusterManager clusterManager) throws Throwable {
+
+        VertxBuilder builder = Vertx.builder();
+
+        if (clusterManager != null) {
+
+            EventBusOptions eventBusOptions = new EventBusOptions();
+            eventBusOptions.setPort(properties.getEventBusClusterPort());
+            eventBusOptions.setHost(properties.getEventBusClusterHost());
+
+            if(properties.getEventBusClusterPublicPort() != -1) {
+                eventBusOptions.setClusterPublicPort(properties.getEventBusClusterPublicPort());
+            }
+            eventBusOptions.setClusterPublicHost(properties.getEventBusClusterPublicHost());
+
+            VertxOptions options = new VertxOptions()
+                    .setEventBusOptions(eventBusOptions);
+
+            return builder.with(options)
+                          .withClusterManager(clusterManager)
+                          .buildClustered()
+                          .toCompletionStage()
+                          .toCompletableFuture()
+                          .get(2, MINUTES);
+        }else{
+            return builder.build();
+        }
     }
 
 }

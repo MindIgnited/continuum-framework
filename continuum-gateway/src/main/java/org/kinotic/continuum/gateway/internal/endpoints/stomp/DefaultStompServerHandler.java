@@ -17,14 +17,8 @@
 
 package org.kinotic.continuum.gateway.internal.endpoints.stomp;
 
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
-import io.vertx.core.impl.ContextInternal;
-import io.vertx.ext.stomp.lite.StompServerConnection;
-import io.vertx.ext.stomp.lite.StompServerHandler;
-import io.vertx.ext.stomp.lite.frame.Frame;
-import io.vertx.ext.stomp.lite.frame.InvalidConnectFrame;
+import java.util.Map;
+
 import org.kinotic.continuum.core.api.event.CRI;
 import org.kinotic.continuum.core.api.event.Event;
 import org.kinotic.continuum.gateway.internal.endpoints.EndpointConnectionHandler;
@@ -33,7 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import java.util.Map;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.ext.stomp.lite.StompServerConnection;
+import io.vertx.ext.stomp.lite.StompServerHandler;
+import io.vertx.ext.stomp.lite.frame.Frame;
+import io.vertx.ext.stomp.lite.frame.InvalidConnectFrame;
 
 /**
  *

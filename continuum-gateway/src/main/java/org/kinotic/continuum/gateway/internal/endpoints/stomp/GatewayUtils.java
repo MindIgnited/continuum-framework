@@ -94,7 +94,7 @@ public class GatewayUtils {
     }
 
 
-    private static Buffer toStompBuffer(Event<byte[]> event){
+    public static Buffer toStompBuffer(Event<byte[]> event){
         Buffer buffer = Buffer.buffer();
         for (Map.Entry<String, String> entry : event.metadata()) {
             String key = entry.getKey();
@@ -115,7 +115,7 @@ public class GatewayUtils {
         return buffer;
     }
 
-    private static Buffer toStompBuffer(Frame frame){
+    public static Buffer toStompBuffer(Frame frame){
         Buffer buffer = Buffer.buffer();
         for (Map.Entry<String, String> entry : frame.getHeaders().entrySet()) {
             String key = entry.getKey();

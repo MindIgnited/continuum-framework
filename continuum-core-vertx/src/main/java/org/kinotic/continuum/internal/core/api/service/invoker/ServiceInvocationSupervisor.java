@@ -17,37 +17,40 @@
 
 package org.kinotic.continuum.internal.core.api.service.invoker;
 
-import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.context.Context;
-import io.opentelemetry.context.Scope;
-import org.kinotic.continuum.core.api.event.*;
-import org.kinotic.continuum.core.api.service.ServiceDescriptor;
-import org.kinotic.continuum.core.api.service.ServiceFunction;
-import org.kinotic.continuum.core.api.service.ServiceFunctionInstanceProvider;
-import org.kinotic.continuum.api.exceptions.RpcMissingMethodException;
-import org.kinotic.continuum.internal.core.api.event.MetadataTextMapGetter;
-import org.kinotic.continuum.internal.utils.EventUtil;
-import io.vertx.core.Vertx;
-import org.apache.commons.lang3.Validate;
-import org.reactivestreams.Subscription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.aop.support.AopUtils;
-import org.springframework.core.ReactiveAdapter;
-import org.springframework.core.ReactiveAdapterRegistry;
-import reactor.core.Disposable;
-import reactor.core.publisher.BaseSubscriber;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.SignalType;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+
+import org.apache.commons.lang3.Validate;
+import org.kinotic.continuum.api.exceptions.RpcMissingMethodException;
+import org.kinotic.continuum.core.api.event.CRI;
+import org.kinotic.continuum.core.api.event.Event;
+import org.kinotic.continuum.core.api.event.EventBusService;
+import org.kinotic.continuum.core.api.event.EventConstants;
+import org.kinotic.continuum.core.api.event.ListenerStatus;
+import org.kinotic.continuum.core.api.event.Metadata;
+import org.kinotic.continuum.core.api.service.ServiceDescriptor;
+import org.kinotic.continuum.core.api.service.ServiceFunction;
+import org.kinotic.continuum.core.api.service.ServiceFunctionInstanceProvider;
+import org.kinotic.continuum.internal.core.api.event.MetadataTextMapGetter;
+import org.kinotic.continuum.internal.utils.EventUtil;
+import org.reactivestreams.Subscription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.core.ReactiveAdapter;
+import org.springframework.core.ReactiveAdapterRegistry;
+
+import io.opentelemetry.api.OpenTelemetry;
+import io.vertx.core.Vertx;
+import reactor.core.Disposable;
+import reactor.core.publisher.BaseSubscriber;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
 
 /**
  * Class handles invoking services that are published to the Continuum.
@@ -71,6 +74,7 @@ public class ServiceInvocationSupervisor {
     private final ServiceDescriptor serviceDescriptor;
     private final Vertx vertx;
     private final OpenTelemetry openTelemetry;
+
 
     private Disposable methodInvocationEventListenerDisposable;
 
@@ -265,7 +269,7 @@ public class ServiceInvocationSupervisor {
 //                                                .extract(Context.current(),
 //                                                         incomingEvent.metadata(),
 //                                                         textMapGetter);
-//
+
 //        Span extractedSpan = Span.fromContextOrNull(extractedContext);
 
         // Ensure there is an argument resolver that can handle the incoming data

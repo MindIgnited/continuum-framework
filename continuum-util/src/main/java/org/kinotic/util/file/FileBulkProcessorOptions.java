@@ -45,15 +45,15 @@ public class FileBulkProcessorOptions {
                                     Path targetDirectory,
                                     Consumer<FileBulkProcessEvent> eventConsumer) {
 
-        Validate.notNull(sourceDirectory);
+        Validate.notNull(sourceDirectory, "The source directory cannot be null");
         Validate.isTrue(sourceDirectory.isAbsolute(), "The source directory must be an absolute path");
         Validate.isTrue(!sourceDirectory.toString().equals("/"), "The source directory must not be '/' ");
 
-        Validate.notNull(targetDirectory);
+        Validate.notNull(targetDirectory, "The target directory cannot be null");
         Validate.isTrue(targetDirectory.isAbsolute(), "The target directory must be an absolute path");
         Validate.isTrue(!targetDirectory.toString().equals("/"), "The target directory must not be '/' ");
 
-        Validate.notNull(eventConsumer);
+        Validate.notNull(eventConsumer, "The event consumer cannot be null");
 
         this.sourceDirectory = sourceDirectory;
         this.targetDirectory = targetDirectory;
@@ -74,7 +74,7 @@ public class FileBulkProcessorOptions {
     }
 
     public FileBulkProcessorOptions withPollInterval(Duration pollInterval) {
-        Validate.notNull(pollInterval);
+        Validate.notNull(pollInterval, "The poll interval cannot be null");
         Validate.isTrue(pollInterval.toMillis() > 0, "The poll interval must be greater than 0");
         this.pollInterval = pollInterval;
         return this;

@@ -35,7 +35,7 @@ public interface IdentifiableCrudService<T extends Identifiable<ID>, ID> extends
      * @return a {@link Mono} containing the new entity or an error if an exception occurred
      */
     default CompletableFuture<T> create(T entity) {
-        Validate.notNull(entity);
+        Validate.notNull(entity, "Entity cannot be null");
         ID id = entity.getId();
         if(id != null){
             return findById(entity.getId())

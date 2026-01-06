@@ -42,10 +42,10 @@ class DefaultCRI implements CRI {
     /**
      * Will create a {@link CRI} from a raw string
      *
-     * @param rawURC the raw string to create from an {@link CRI}
+     * @param rawCRI the raw string to create from an {@link CRI}
      */
-    public DefaultCRI(String rawURC) {
-        uri = URI.create(rawURC);
+    public DefaultCRI(String rawCRI) {
+        uri = URI.create(rawCRI);
     }
 
     @Override

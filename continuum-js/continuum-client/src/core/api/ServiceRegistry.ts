@@ -1,49 +1,35 @@
 /*
- *
  * Copyright 2008-2021 Kinotic and the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ * See https://www.apache.org/licenses/LICENSE-2.0
  */
-import {ContinuumContextStack} from '@/api/Continuum'
-import opentelemetry, {SpanKind, SpanStatusCode, Tracer} from '@opentelemetry/api'
+
+import { ContinuumContextStack } from '@/api/Continuum'
+import { ServiceIdentifier } from './ServiceIdentifier.js'
+import { ServiceInvocationSupervisor } from '@/internal/core/api/ServiceInvocationSupervisor.js'
+import opentelemetry, { SpanKind, SpanStatusCode, Tracer } from '@opentelemetry/api'
 import {
     ATTR_SERVER_ADDRESS,
     ATTR_SERVER_PORT,
-    ATTR_RPC_METHOD,
-    ATTR_RPC_SERVICE,
-    ATTR_RPC_SYSTEM
-} from '@opentelemetry/semantic-conventions/incubating'
-import {Observable} from 'rxjs'
-import {first, map} from 'rxjs/operators'
-import info from '../../../package.json' assert {type: 'json'}
-import {Event} from './EventBus'
-import {EventConstants, IEvent, IEventBus} from './IEventBus'
-import {IEventFactory, IServiceProxy, IServiceRegistry} from './IServiceRegistry'
+} from '@opentelemetry/semantic-conventions'
+import { Observable } from 'rxjs'
+import { first, map } from 'rxjs/operators'
+import info from '../../../package.json' assert { type: 'json' }
+import { Event } from './EventBus'
+import { EventConstants, IEvent, IEventBus } from './IEventBus'
+import { IEventFactory, IServiceProxy, IServiceRegistry } from './IServiceRegistry'
+import { ContextInterceptor, ServiceContext } from './ContextInterceptor'
 
 /**
  * An implementation of a {@link IEventFactory} which uses JSON content
  */
 export class JsonEventFactory implements IEventFactory {
-
     create(cri: string, args: any[] | null | undefined): IEvent {
         const event: Event = new Event(cri)
-
         event.setHeader(EventConstants.CONTENT_TYPE_HEADER, EventConstants.CONTENT_JSON)
-
-        if(args != null) {
+        if (args != null) {
             event.setDataString(JSON.stringify(args))
         }
-
         return event
     }
 }
@@ -52,15 +38,12 @@ export class JsonEventFactory implements IEventFactory {
  * An implementation of a {@link IEventFactory} which uses text content
  */
 export class TextEventFactory implements IEventFactory {
-
     create(cri: string, args: any[] | null | undefined): IEvent {
         const event: Event = new Event(cri)
-
         event.setHeader(EventConstants.CONTENT_TYPE_HEADER, EventConstants.CONTENT_TEXT)
         if (args != null) {
             let data: string = ''
             let i = 0
-
             for (const arg of args) {
                 if (i > 0) {
                     data = data + '\n'
@@ -68,22 +51,21 @@ export class TextEventFactory implements IEventFactory {
                 data = data + arg
                 i++
             }
-
             if (data.length > 0) {
                 event.setDataString(data)
             }
         }
         return event
     }
-
 }
 
 /**
  * The default implementation of {@link IServiceRegistry}
  */
 export class ServiceRegistry implements IServiceRegistry {
-
     private readonly eventBus: IEventBus
+    private readonly supervisors: Map<string, ServiceInvocationSupervisor> = new Map()
+    private contextInterceptor: ContextInterceptor<any> | null = null
 
     constructor(eventBus: IEventBus) {
         this.eventBus = eventBus
@@ -91,6 +73,33 @@ export class ServiceRegistry implements IServiceRegistry {
 
     public serviceProxy(serviceIdentifier: string): IServiceProxy {
         return new ServiceProxy(serviceIdentifier, this.eventBus)
+    }
+
+    public register(serviceIdentifier: ServiceIdentifier, service: any): void {
+        const criString = serviceIdentifier.cri().raw()
+        if (!this.supervisors.has(criString)) {
+            const supervisor = new ServiceInvocationSupervisor(
+                serviceIdentifier,
+                service,
+                this.eventBus,
+                () => this.contextInterceptor
+            )
+            this.supervisors.set(criString, supervisor)
+            supervisor.start()
+        }
+    }
+
+    public unRegister(serviceIdentifier: ServiceIdentifier): void {
+        const criString = serviceIdentifier.cri().raw()
+        const supervisor = this.supervisors.get(criString)
+        if (supervisor) {
+            supervisor.stop()
+            this.supervisors.delete(criString)
+        }
+    }
+
+    public registerContextInterceptor<T extends ServiceContext>(interceptor: ContextInterceptor<T> | null): void {
+        this.contextInterceptor = interceptor
     }
 }
 
@@ -103,13 +112,12 @@ const defaultEventFactory: IEventFactory = new JsonEventFactory()
  * For internal use only should not be instantiated directly
  */
 class ServiceProxy implements IServiceProxy {
-
     public readonly serviceIdentifier: string
     private readonly eventBus: IEventBus
     private tracer: Tracer
 
     constructor(serviceIdentifier: string, eventBus: IEventBus) {
-        if ( typeof serviceIdentifier === 'undefined' || serviceIdentifier.length === 0 ) {
+        if (typeof serviceIdentifier === 'undefined' || serviceIdentifier.length === 0) {
             throw new Error('The serviceIdentifier provided must contain a value')
         }
         this.serviceIdentifier = serviceIdentifier
@@ -129,13 +137,13 @@ class ServiceProxy implements IServiceProxy {
             {
                 kind: SpanKind.CLIENT
             },
-            async(span) => {
+            async (span) => {
                 if (scope) {
                     span.setAttribute('continuum.scope', scope)
                 }
-                span.setAttribute(ATTR_RPC_SYSTEM, 'continuum')
-                span.setAttribute(ATTR_RPC_SERVICE, this.serviceIdentifier)
-                span.setAttribute(ATTR_RPC_METHOD, methodIdentifier)
+                span.setAttribute('rpc.system', 'continuum')
+                span.setAttribute('rpc.service', this.serviceIdentifier)
+                span.setAttribute('rpc.method', methodIdentifier)
 
                 return this.__invokeStream(false, methodIdentifier, args, scope, eventFactory)
                            .pipe(first())
@@ -166,23 +174,22 @@ class ServiceProxy implements IServiceProxy {
                            args?: any[] | null | undefined,
                            scope?: string | null | undefined,
                            eventFactory?: IEventFactory | null | undefined): Observable<any> {
-
         const cri: string = EventConstants.SERVICE_DESTINATION_PREFIX + (scope != null ? scope + '@' : '') + this.serviceIdentifier + '/' + methodIdentifier
         let eventFactoryToUse = defaultEventFactory
-        if(eventFactory){
+        if (eventFactory) {
             eventFactoryToUse = eventFactory
-        }else if(ContinuumContextStack.getEventFactory()){
+        } else if (ContinuumContextStack.getEventFactory()) {
             eventFactoryToUse = ContinuumContextStack.getEventFactory()!
         }
 
         let eventBusToUse = this.eventBus
-        if(ContinuumContextStack.getContinuumInstance()){
+        if (ContinuumContextStack.getContinuumInstance()) {
             eventBusToUse = ContinuumContextStack.getContinuumInstance()!.eventBus
         }
 
         // store additional attribute if there is an active span
         const span = opentelemetry.trace.getActiveSpan()
-        if(span){
+        if (span) {
             span.setAttribute(ATTR_SERVER_ADDRESS, eventBusToUse.serverInfo?.host || 'unknown')
             span.setAttribute(ATTR_SERVER_PORT, eventBusToUse.serverInfo?.port || 'unknown')
         }
@@ -191,16 +198,14 @@ class ServiceProxy implements IServiceProxy {
 
         return eventBusToUse.requestStream(event, sendControlEvents)
                             .pipe(map<IEvent, any>((value: IEvent): any => {
-
                                 const contentType: string | undefined = value.getHeader(EventConstants.CONTENT_TYPE_HEADER)
-
                                 if (contentType !== undefined) {
                                     if (contentType === 'application/json') {
                                         return JSON.parse(value.getDataString())
                                     } else if (contentType === 'text/plain') {
                                         return value.getDataString()
                                     } else {
-                                        throw new Error('Content Type ' + contentType + ' is unknown')
+                                        throw new Error('Content Type ' + contentType + ' is not supported')
                                     }
                                 } else {
                                     return null
@@ -208,4 +213,3 @@ class ServiceProxy implements IServiceProxy {
                             }))
     }
 }
-

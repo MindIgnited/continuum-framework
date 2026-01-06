@@ -17,7 +17,7 @@
 
 package org.kinotic.continuum.idl.internal.directory;
 
-import org.kinotic.continuum.api.annotations.Name;
+import org.kinotic.continuum.idl.api.annotations.Name;
 import org.kinotic.continuum.idl.api.directory.SchemaFactory;
 import org.kinotic.continuum.idl.api.schema.*;
 import org.springframework.core.MethodParameter;

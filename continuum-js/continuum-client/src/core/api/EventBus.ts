@@ -15,18 +15,17 @@
  * limitations under the License.
  */
 
-import {StompConnectionManager} from '@/core/api/StompConnectionManager'
-import {IEvent, IEventBus, EventConstants} from './IEventBus'
-import { ConnectableObservable, Observable, Subject, Unsubscribable, Subscription, throwError } from 'rxjs'
-import { filter, map, multicast } from 'rxjs/operators'
-import { firstValueFrom } from 'rxjs'
-import { IMessage, IFrame } from '@stomp/rx-stomp'
-import { Optional } from 'typescript-optional'
-import { v4 as uuidv4 } from 'uuid'
-import {ConnectedInfo} from '@/api/security/ConnectedInfo'
-import {ContinuumError} from '@/api/errors/ContinuumError'
 import {ConnectionInfo, ServerInfo} from '@/api/ConnectionInfo'
-import { context, propagation } from '@opentelemetry/api';
+import {ContinuumError} from '@/api/errors/ContinuumError'
+import {ConnectedInfo} from '@/api/security/ConnectedInfo'
+import {StompConnectionManager} from '@/core/api/StompConnectionManager'
+import {context, propagation} from '@opentelemetry/api';
+import {IFrame, IMessage} from '@stomp/rx-stomp'
+import {ConnectableObservable, firstValueFrom, Observable, Subject, Subscription, throwError, Unsubscribable} from 'rxjs'
+import {filter, map, multicast} from 'rxjs/operators'
+import {Optional} from 'typescript-optional'
+import {v4 as uuidv4} from 'uuid'
+import {EventConstants, IEvent, IEventBus} from './IEventBus'
 
 /**
  * Default IEvent implementation
@@ -95,6 +94,7 @@ export class EventBus implements IEventBus {
     private stompConnectionManager: StompConnectionManager = new StompConnectionManager()
     private replyToCri: string  | null = null
     private requestRepliesObservable: ConnectableObservable<IEvent> | null = null
+    private requestRepliesSubject: Subject<IEvent> | null = null
     private requestRepliesSubscription: Subscription | null = null
     private errorSubject: Subject<IFrame> = new Subject<IFrame>()
     private errorSubjectSubscription: Subscription | null | undefined = null
@@ -102,15 +102,18 @@ export class EventBus implements IEventBus {
     constructor() {
         this.fatalErrors = this.errorSubject
                                .pipe(map<IFrame, Error>((frame: IFrame): Error => {
-            this.disconnect()
-                .catch((error: string) => {
-                    if(console){
-                        console.error('Error disconnecting from Stomp: ' + error)
-                    }
-                })
-            // TODO: map to continuum error
-            return new ContinuumError(frame.headers['message'])
-        }))
+                                   this.disconnect()
+                                       .catch((error: string) => {
+                                           if(console){
+                                               console.error('Error disconnecting from Stomp: ' + error)
+                                           }
+                                       })
+                                   // TODO: map to continuum error
+                                   return new ContinuumError(frame.headers['message'])
+                               }))
+        this.stompConnectionManager.deactivationHandler = () => {
+            this.cleanup()
+        }
     }
 
     public isConnectionActive(): boolean{
@@ -135,7 +138,7 @@ export class EventBus implements IEventBus {
             this.serverInfo.useSSL = connectionInfo.useSSL
 
             // FIXME: a reply should not need a reply, therefore a replyCri probably should not be a EventConstants.SERVICE_DESTINATION_PREFIX
-            this.replyToCri = EventConstants.SERVICE_DESTINATION_PREFIX + connectedInfo.replyToId + ':' + uuidv4() + '@continuum.js.EventBus/replyHandler'
+            this.replyToCri = this.stompConnectionManager.replyToCri
 
             this.errorSubjectSubscription = this.stompConnectionManager.rxStomp?.stompErrors$.subscribe(this.errorSubject)
 
@@ -146,9 +149,9 @@ export class EventBus implements IEventBus {
     }
 
     public async disconnect(force?: boolean): Promise<void> {
-        this.cleanup()
+        await this.stompConnectionManager.deactivate(force)
 
-        return this.stompConnectionManager.deactivate(force)
+        this.cleanup()
     }
 
     public send(event: IEvent): void {
@@ -170,10 +173,10 @@ export class EventBus implements IEventBus {
 
             // send data over stomp
             this.stompConnectionManager.rxStomp.publish({
-                destination: event.cri,
-                headers,
-                binaryBody: event.data.orUndefined()
-            })
+                                                            destination: event.cri,
+                                                            headers,
+                                                            binaryBody: event.data.orUndefined()
+                                                        })
         }else{
             throw this.createSendUnavailableError()
         }
@@ -188,46 +191,49 @@ export class EventBus implements IEventBus {
             return new Observable<IEvent>((subscriber) => {
 
                 if (this.requestRepliesObservable == null) {
-                    this.requestRepliesObservable = this._observe(this.replyToCri as string).pipe(multicast(new Subject())) as ConnectableObservable<IEvent>
+                    this.requestRepliesSubject = new Subject<IEvent>()
+                    this.requestRepliesObservable = this._observe(this.replyToCri as string)
+                                                        .pipe(multicast(this.requestRepliesSubject)) as ConnectableObservable<IEvent>
                     this.requestRepliesSubscription = this.requestRepliesObservable.connect()
                 }
 
                 let serverSignaledCompletion = false
                 const correlationId = uuidv4()
-                const defaultMessagesSubscription: Unsubscribable = this.requestRepliesObservable
-                    .pipe(filter((value: IEvent): boolean => {
-                        return value.headers.get(EventConstants.CORRELATION_ID_HEADER) === correlationId
-                    })).subscribe({
-                        next(value: IEvent): void {
+                const defaultMessagesSubscription: Unsubscribable
+                          = this.requestRepliesObservable
+                                .pipe(filter((value: IEvent): boolean => {
+                                    return value.headers.get(EventConstants.CORRELATION_ID_HEADER) === correlationId
+                                })).subscribe({
+                                                  next(value: IEvent): void {
 
-                            if (value.hasHeader(EventConstants.CONTROL_HEADER)) {
+                                                      if (value.hasHeader(EventConstants.CONTROL_HEADER)) {
 
-                                if (value.headers.get(EventConstants.CONTROL_HEADER) === 'complete') {
-                                    serverSignaledCompletion = true
-                                    subscriber.complete()
-                                } else {
-                                    throw new Error('Control Header ' + value.headers.get(EventConstants.CONTROL_HEADER) + ' is not supported')
-                                }
+                                                          if (value.headers.get(EventConstants.CONTROL_HEADER) === 'complete') {
+                                                              serverSignaledCompletion = true
+                                                              subscriber.complete()
+                                                          } else {
+                                                              throw new Error('Control Header ' + value.headers.get(EventConstants.CONTROL_HEADER) + ' is not supported')
+                                                          }
 
-                            } else if (value.hasHeader(EventConstants.ERROR_HEADER)) {
+                                                      } else if (value.hasHeader(EventConstants.ERROR_HEADER)) {
 
-                                // TODO: add custom error type that contains error detail as well if provided by server, this would be the event body
-                                serverSignaledCompletion = true
-                                subscriber.error(new Error(value.getHeader(EventConstants.ERROR_HEADER)))
+                                                          // TODO: add custom error type that contains error detail as well if provided by server, this would be the event body
+                                                          serverSignaledCompletion = true
+                                                          subscriber.error(new Error(value.getHeader(EventConstants.ERROR_HEADER)))
 
-                            } else {
+                                                      } else {
 
-                                subscriber.next(value)
+                                                          subscriber.next(value)
 
-                            }
-                        },
-                        error(err: any): void {
-                            subscriber.error(err)
-                        },
-                        complete(): void {
-                            subscriber.complete()
-                        }
-                    })
+                                                      }
+                                                  },
+                                                  error(err: any): void {
+                                                      subscriber.error(err)
+                                                  },
+                                                  complete(): void {
+                                                      subscriber.complete()
+                                                  }
+                                              })
 
                 subscriber.add(defaultMessagesSubscription)
 
@@ -252,15 +258,21 @@ export class EventBus implements IEventBus {
     }
 
     public observe(cri: string): Observable<IEvent> {
-       return this._observe(cri)
+        return this._observe(cri)
     }
 
     private cleanup(): void{
-        if (this.requestRepliesObservable != null) {
+        if (this.requestRepliesSubject != null) {
+
+            // This will be sent to any client waiting on an Event
+            this.requestRepliesSubject.error(new Error('Connection disconnected'))
+
             if (this.requestRepliesSubscription != null) {
                 this.requestRepliesSubscription.unsubscribe()
                 this.requestRepliesSubscription = null
             }
+
+            this.requestRepliesSubject = null;
             this.requestRepliesObservable = null
         }
 
@@ -298,12 +310,16 @@ export class EventBus implements IEventBus {
 
                            // We translate all IMessage objects to IEvent objects
                            const headers: Map<string, string> = new Map<string, string>()
-
+                           let destination: string = ''
                            for (const prop of Object.keys(message.headers)) {
-                               headers.set(prop, message.headers[prop])
+                               if (prop === 'destination') {
+                                   destination = message.headers[prop]
+                               }else{
+                                   headers.set(prop, message.headers[prop])
+                               }
                            }
 
-                           return new Event(cri, headers, message.binaryBody)
+                           return new Event(destination, headers, message.binaryBody)
                        }))
         }else{
             return throwError(() => this.createSendUnavailableError())

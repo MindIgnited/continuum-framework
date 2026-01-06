@@ -110,7 +110,6 @@ public class HandlerMethod {
      *
      * @return the result of the invocation
      */
-    @SuppressWarnings("unchecked")
     public Object invoke(Object... args) throws Exception{
         Validate.isTrue(args.length == parameters.length, "Wrong number of parameters provided, Expected: "+parameters.length+" Got: "+args.length);
         return doInvoke(args);

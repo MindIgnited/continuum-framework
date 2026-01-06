@@ -182,6 +182,11 @@ export enum EventConstants {
     REPLY_TO_HEADER = 'reply-to',
 
     /**
+     * This is the replyToId that will be supplied by the client, which will be used when sending replies to the client.
+     */
+    REPLY_TO_ID_HEADER = 'reply-to-id',
+
+    /**
      * Header provided by the sever on connection to represent the user's session id
      */
     SESSION_HEADER = 'session',
@@ -230,7 +235,9 @@ export enum EventConstants {
     CONTROL_VALUE_RESUME = 'resume',
 
     SERVICE_DESTINATION_PREFIX = 'srv://',
+    SERVICE_DESTINATION_SCHEME = "srv",
     STREAM_DESTINATION_PREFIX =  'stream://',
+    STREAM_DESTINATION_SCHEME = "stream",
 
     CONTENT_JSON = 'application/json',
     CONTENT_TEXT = 'text/plain',

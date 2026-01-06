@@ -27,11 +27,9 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
         mavenBom "io.opentelemetry:opentelemetry-bom:${otelBomVersion}"
+        mavenBom "io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:${otelInstrumentationBomVersion}"
     }
     dependencies {
-        dependency "ch.qos.logback:logback-core:${logbackVersion}"
-        dependency "ch.qos.logback:logback-classic:${logbackVersion}"
-
         dependency "commons-io:commons-io:${commonsIoVersion}"
 
         dependency "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
@@ -52,8 +50,6 @@ dependencyManagement {
         dependency "io.netty:netty-resolver:${nettyVersion}"
         dependency "io.netty:netty-transport:${nettyVersion}"
 
-        dependency "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:${otelAnnotationsVersion}"
-
         dependency "io.vertx:vertx-core:${vertxVersion}"
         dependency "io.vertx:vertx-web:${vertxVersion}"
         dependency "io.vertx:vertx-web-client:${vertxVersion}"
@@ -63,7 +59,6 @@ dependencyManagement {
         dependency "io.vertx:vertx-reactive-streams:${vertxVersion}"
         dependency "io.vertx:vertx-web-graphql:${vertxVersion}"
         dependency "io.vertx:vertx-health-check:${vertxVersion}"
-        dependency "com.github.rworsnop:vertx-beans:${vertxBeansVersion}"
 
         dependency "javax.annotation:javax.annotation-api:${javaxAnnotationApi}"
         dependency "javax.cache:cache-api:${jCacheApiVersion}"
@@ -100,8 +95,8 @@ dependencies {
     implementation 'ch.qos.logback:logback-core'
     implementation 'ch.qos.logback:logback-classic'
 
-    implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations'
     implementation 'io.opentelemetry:opentelemetry-api'
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations'
 
     // Add aspectj weaver dependency for use during tests
     agent "org.aspectj:aspectjweaver:$aspectJVersion"

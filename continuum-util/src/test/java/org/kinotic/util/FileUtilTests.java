@@ -70,9 +70,10 @@ public class FileUtilTests {
     }
 
     private byte[] copyFileToBytesAndReverseJdkSlow(File sourceFile) throws IOException {
-        FileInputStream fis = new FileInputStream(sourceFile);
         ByteArrayOutputStream byos = new ByteArrayOutputStream(1024);
-        fis.transferTo(byos);
+        try (FileInputStream fis = new FileInputStream(sourceFile)) {
+            fis.transferTo(byos);
+        }
         byte[] bytes = byos.toByteArray();
         ArrayUtils.reverse(bytes);
         return bytes;

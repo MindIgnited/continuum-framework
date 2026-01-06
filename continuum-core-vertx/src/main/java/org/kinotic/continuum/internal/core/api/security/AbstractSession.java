@@ -107,7 +107,7 @@ public abstract class AbstractSession implements Session {
         int result = -1;
 
         // check one time paths
-        if(temporarySendPathPatterns.size() > 0){
+        if(!temporarySendPathPatterns.isEmpty()){
             result = checkMatches(cri.raw(), temporarySendPathPatterns);
             // temporary patterns can only match once
             if(result != -1){
@@ -144,9 +144,7 @@ public abstract class AbstractSession implements Session {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (!(o instanceof Session)) return false;
-
-        Session that = (Session) o;
+        if (!(o instanceof Session that)) return false;
 
         return new EqualsBuilder().append(participant, that.participant())
                                   .append(sessionId, that.sessionId())

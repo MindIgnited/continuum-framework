@@ -29,10 +29,12 @@ import org.kinotic.continuum.internal.serializer.PageSerializer;
 import org.kinotic.continuum.internal.serializer.PageableDeserializer;
 import org.kinotic.continuum.internal.serializer.SearchComparatorDeserializer;
 import org.kinotic.continuum.internal.serializer.SearchComparatorSerializer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.ReactiveAdapterRegistry;
 
 /**
  *
@@ -58,6 +60,15 @@ public class ContinuumJacksonConfig {
         ret.setAbstractTypes(resolver);
 
         return ret;
+    }
+
+    // FIXME: Make sure this works with Spring WebFlux
+    // This is configured in org.kinotic.continuum.internal.api.DefaultContinuum
+    // It is done there in case this bean is supplied by spring directly
+    @ConditionalOnMissingBean
+    @Bean
+    public ReactiveAdapterRegistry reactiveAdapterRegistry(){
+        return new ReactiveAdapterRegistry();
     }
 
 

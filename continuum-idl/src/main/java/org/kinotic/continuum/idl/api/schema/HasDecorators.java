@@ -40,8 +40,9 @@ public interface HasDecorators {
         if(getDecorators() != null){
             for (C3Decorator decorator : getDecorators()){
                 if(clazz.isAssignableFrom(decorator.getClass())){
-                    //noinspection unchecked
-                    ret = (T) decorator;
+                    @SuppressWarnings("unchecked")
+                    T castDecorator = (T) decorator; // needed for suppressing the unchecked cast warning
+                    ret = castDecorator;
                     break;
                 }
             }

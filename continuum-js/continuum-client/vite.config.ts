@@ -11,7 +11,7 @@ export default defineConfig({
             entry: resolve(__dirname, 'src/index.ts'),
             name: 'continuum',
             fileName: 'continuum',
-            formats: ["es"],
+            formats: ["es", "cjs"],
         },
         sourcemap: true,
     },
@@ -28,6 +28,9 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
+        },
+        env: {
+            DEBUG: 'continuum:*'
         },
         globalSetup: './test/setup.ts',
         setupFiles: ["allure-vitest/setup"],

@@ -17,22 +17,28 @@
 
 package org.kinotic.continuum.internal.core.api.aignite;
 
-import io.vertx.core.impl.ContextInternal;
-import org.kinotic.continuum.core.api.event.StreamData;
-import org.kinotic.continuum.internal.utils.IgniteUtil;
-import io.vertx.core.*;
-import org.apache.commons.lang3.Validate;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.cache.Cache;
+import javax.cache.event.CacheEntryEvent;
+
 import org.apache.ignite.IgniteCache;
 import org.apache.ignite.cache.query.ContinuousQuery;
 import org.apache.ignite.cache.query.Query;
 import org.apache.ignite.cache.query.SqlQuery;
+import org.kinotic.continuum.core.api.event.StreamData;
+import org.kinotic.continuum.internal.utils.IgniteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
-import javax.cache.event.CacheEntryEvent;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
+import io.vertx.core.Closeable;
+import io.vertx.core.Context;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.impl.ContextInternal;
 
 /**
  * Using this as a bridge between tested legacy Ignite logic and the new code base

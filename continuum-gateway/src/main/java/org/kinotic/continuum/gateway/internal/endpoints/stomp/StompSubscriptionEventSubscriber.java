@@ -52,13 +52,13 @@ public class StompSubscriptionEventSubscriber extends BaseSubscriber<Event<byte[
             frame.getHeaders().put(Frame.SUBSCRIPTION, subscriptionId);
 
             if(log.isTraceEnabled()) {
-                log.trace("Sending Frame\n" + frame);
+                log.trace("Sending Frame\n{}", frame);
             }
 
             connection.write(frame);
 
         } catch (Exception e) {
-            log.error("Unexpected Error in Handler " + e.getMessage(), e);
+            log.error("Unexpected Error in Handler {}", e.getMessage(), e);
             log.error("Closing connection");
             dispose();
             connection.close();
@@ -67,7 +67,7 @@ public class StompSubscriptionEventSubscriber extends BaseSubscriber<Event<byte[
 
     @Override
     protected void hookOnError(Throwable throwable) {
-        log.error("Error on event bus subscription for destination "+ destination, throwable);
+        log.error("Error on event bus subscription for destination {}", destination, throwable);
     }
 
 }
