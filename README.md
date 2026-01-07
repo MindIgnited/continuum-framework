@@ -21,3 +21,4 @@ To ensure that the Continuum Framework remains at the forefront of software deve
 As a nonprofit organization, the Kinotic Foundation is dedicated to making the Continuum Framework accessible to all developers, regardless of their background or financial resources, in the hopes of fostering a collaborative and inclusive community of software developers.
 
 Overall, the Continuum Framework empowers developers with the tools and knowledge they need to create innovative and impactful software solutions. Its support for microservices and IoT, coupled with ongoing research and innovation, makes it a comprehensive and adaptable solution for developers seeking to build high-quality software applications.
+
