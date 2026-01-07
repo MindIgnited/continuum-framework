@@ -97,7 +97,7 @@ jobs:
           description: 'Passed'
           state: 'success'
           sha: ${{github.event.pull_request.head.sha || github.sha}}
-          target_url: https://mindsignited.github.io/continuum-framework/allure/${{ github.run_number }}
+          target_url: https://mindignited.github.io/continuum-framework/allure/${{ github.run_number }}
 
       - name: Check If Failure
         if: ${{ steps.gradle_build.outcome == 'failure' || steps.run_e2e_tests.outcome == 'failure' }}
