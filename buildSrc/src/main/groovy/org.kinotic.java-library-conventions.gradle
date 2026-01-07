@@ -51,9 +51,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:https://github.com/mindsignited/continuum-framework.git'
-                    developerConnection = 'scm:git:https://github.com/mindsignited/continuum-framework.git'
-                    url = 'https://github.com/mindsignited/continuum-framework'
+                    connection = 'scm:git:https://github.com/mindignited/continuum-framework.git'
+                    developerConnection = 'scm:git:https://github.com/mindignited/continuum-framework.git'
+                    url = 'https://github.com/mindignited/continuum-framework'
                 }
             }
         }

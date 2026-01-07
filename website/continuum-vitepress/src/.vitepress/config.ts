@@ -21,11 +21,11 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: ' https://github.com/mindsignited/continuum-framework' }
+      { icon: 'github', link: ' https://github.com/mindignited/continuum-framework' }
     ],
     footer: {
       message: 'Released under the Apache License.',
-      copyright: 'Copyright © 2018-present Kinotic Foundation'
+      copyright: 'Copyright © 2010-present Mind Ignited'
     }
   }
 })
@@ -40,7 +40,7 @@ function nav() {
     },
     {
       text: 'Test Status',
-      link: 'https://mindsignited.github.io/continuum-framework/allure' // Fully qualified URL
+      link: 'https://mindignited.github.io/continuum-framework/allure' // Fully qualified URL
     }
   ]
 }
