@@ -46,8 +46,8 @@ publishing {
                 }
                 developers {
                     developer {
-                        name = 'Kinotic Developers'
-                        email = 'develop@kinotic.org'
+                        name = 'Mind Ignited'
+                        email = 'develop@mindignited.com'
                     }
                 }
                 scm {
