@@ -5,7 +5,7 @@ Continuum Core is a Java-based framework that provides service discovery, RPC ca
 
 ## Architecture Layers
 
-### 1. High-Level API (`org.kinotic.continuum.api`)
+### 1. High-Level API (`org.mindignited.continuum.api`)
 **Purpose**: Public interfaces for application developers
 **Usage**: Can be used directly by Continuum applications
 **Spring Scanning**: NOT automatically scanned by Spring
@@ -24,7 +24,7 @@ Continuum Core is a Java-based framework that provides service discovery, RPC ca
 - `@Scope`: Defines service scope
 - `@Version`: Specifies service versioning
 
-### 2. Low-Level API (`org.kinotic.continuum.core.api`)
+### 2. Low-Level API (`org.mindignited.continuum.core.api`)
 **Purpose**: Framework implementation interfaces
 **Usage**: Should only be used by framework implementers
 **Spring Scanning**: NOT automatically scanned by Spring
@@ -45,7 +45,7 @@ Continuum Core is a Java-based framework that provides service discovery, RPC ca
 - `EventStreamService`: Persistent event streams
 - `CRI`: Continuum Resource Identifier for routing
 
-### 3. Internal Implementation (`org.kinotic.continuum.internal`)
+### 3. Internal Implementation (`org.mindignited.continuum.internal`)
 **Purpose**: Framework internals
 **Usage**: Should only be used by framework implementers
 **Spring Scanning**: Automatically scanned by Spring

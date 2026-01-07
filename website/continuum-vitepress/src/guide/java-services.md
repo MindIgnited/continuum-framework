@@ -13,7 +13,7 @@ The `@Publish` annotation tells Continuum that this interface should be made ava
 ### Basic Usage
 
 ```java
-import org.kinotic.continuum.api.annotations.Publish;
+import org.mindignited.continuum.api.annotations.Publish;
 
 @Publish
 public interface StoreService {
@@ -114,11 +114,11 @@ public interface StoreService {
 For services that need security context (authentication, authorization, tenant information), you can include a `Participant` parameter:
 
 ```java
-import org.kinotic.continuum.api.security.Participant;
+import org.mindignited.continuum.api.security.Participant;
 
 @Publish
 public interface SecureService {
-    
+
     // Participant is automatically injected by the framework
     List<Data> getData(Participant participant);
 }
@@ -190,7 +190,7 @@ You can inject repositories, other services (including other Continuum services)
 You can call other Continuum services directly by injecting them as Spring beans—just like normal, even if they're implemented in another process or microservice. In this case, you'll need to make sure the service interface is shared in both projects (either by using a shared library module, or copying the interface). Continuum automatically creates a proxy, so you can interact with the remote service as if it were local.
 
 > ℹ️ **Note:** This approach works across processes or distributed services, not just within the same Spring application.  
-> To see a full, production-ready example, check out the [CoolCommerce project](https://github.com/Kinotic-Foundation/continuum-examples/tree/main/CoolCommerce).
+> To see a full, production-ready example, check out the [CoolCommerce project](https://github.com/MindIgnited/continuum-examples/tree/main/CoolCommerce).
 
 
 When you need to call another Continuum service, just inject it like any other Spring bean:
@@ -220,8 +220,8 @@ package com.coolcompany.ecommerce_main.api;
 import com.coolcompany.ecommerce_main.api.domain.Category;
 import com.coolcompany.ecommerce_main.api.domain.CheckoutInfo;
 import com.coolcompany.ecommerce_main.api.domain.Product;
-import org.kinotic.continuum.api.annotations.Publish;
-import org.kinotic.continuum.api.annotations.Version;
+import org.mindignited.continuum.api.annotations.Publish;
+import org.mindignited.continuum.api.annotations.Version;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -230,13 +230,13 @@ import java.util.UUID;
 @Publish
 @Version("0.1.0")
 public interface StoreService {
-    
+
     List<Category> getAllCategories();
-    
+
     List<Product> getAllProductsForCategoryId(Long categoryId);
-    
+
     Product getProduct(Long productId);
-    
+
     Mono<UUID> checkout(CheckoutInfo checkoutInfo);
 }
 ```

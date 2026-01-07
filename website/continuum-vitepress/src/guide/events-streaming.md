@@ -84,21 +84,21 @@ To publish events, you create an event with a CRI destination and send it.
 ### Publishing Events
 
 ```java
-import org.kinotic.continuum.core.api.event.EventService;
-import org.kinotic.continuum.core.api.event.CRI;
-import org.kinotic.continuum.core.api.event.Event;
-import org.kinotic.continuum.core.api.event.DefaultEvent;
+import org.mindignited.continuum.core.api.event.EventService;
+import org.mindignited.continuum.core.api.event.CRI;
+import org.mindignited.continuum.core.api.event.Event;
+import org.mindignited.continuum.core.api.event.DefaultEvent;
 
 @Service
 public class SensorService {
-    
+
     @Autowired
     private EventService eventService;
-    
+
     public void publishTemperatureReading(String sensorId, double temperature) {
         // Create CRI - using stream:// for persistent events
         CRI destination = CRI.create("stream://temperature/" + sensorId);
-        
+
         // Create and send the event
         Event<Double> event = new DefaultEvent<>(destination, temperature);
         eventService.send(event).subscribe();

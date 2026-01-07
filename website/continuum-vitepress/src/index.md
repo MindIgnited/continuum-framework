@@ -15,7 +15,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/Kinotic-Foundation/continuum-framework
+      link: https://github.com/MindIgnited/continuum-framework
 
 features:
   - icon:

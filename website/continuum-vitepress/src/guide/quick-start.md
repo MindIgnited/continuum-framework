@@ -41,8 +41,8 @@ Replace `${continuumVersion}` with the latest Continuum version.
 In your main Spring Boot application class, add the `@EnableContinuum` and `@EnableContinuumGateway` annotations:
 
 ```java
-import org.kinotic.continuum.api.annotations.EnableContinuum;
-import org.kinotic.continuum.gateway.api.annotations.EnableContinuumGateway;
+import org.mindignited.continuum.api.annotations.EnableContinuum;
+import org.mindignited.continuum.gateway.api.annotations.EnableContinuumGateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -63,7 +63,7 @@ The `@EnableContinuum` annotation enables Continuum in your application. The `@E
 Create a service interface and add the `@Publish` annotation:
 
 ```java
-import org.kinotic.continuum.api.annotations.Publish;
+import org.mindignited.continuum.api.annotations.Publish;
 
 @Publish
 public interface HelloService {
