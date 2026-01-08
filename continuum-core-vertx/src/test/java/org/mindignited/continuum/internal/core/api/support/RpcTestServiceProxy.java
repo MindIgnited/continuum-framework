@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * Created by navid on 10/30/19
  */
-@Proxy(namespace = "org.kinotic.continuum.internal.core.api.support",
+@Proxy(namespace = "org.mindignited.continuum.internal.core.api.support",
        name = "RpcTestService")
 public interface RpcTestServiceProxy {
 
