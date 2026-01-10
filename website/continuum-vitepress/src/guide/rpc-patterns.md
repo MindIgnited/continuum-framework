@@ -33,7 +33,7 @@ public interface StoreService {
 Create a typed service proxy class and use it:
 
 ```typescript
-import { IServiceProxy, Continuum } from '@kinotic/continuum-client'
+import { IServiceProxy, Continuum } from '@mindignited/continuum-client'
 
 interface IStoreService {
     getProduct(productId: number): Promise<Product>
@@ -88,7 +88,7 @@ public interface DataService {
 Create a typed service proxy class for streaming methods:
 
 ```typescript
-import { IServiceProxy, Continuum } from '@kinotic/continuum-client'
+import { IServiceProxy, Continuum } from '@mindignited/continuum-client'
 import { Observable } from 'rxjs'
 
 interface IDataService {

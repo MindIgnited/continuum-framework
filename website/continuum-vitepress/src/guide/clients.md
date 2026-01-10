@@ -15,11 +15,11 @@ The Continuum TypeScript client allows you to connect to Continuum services and 
 Install the Continuum client library:
 
 ```bash
-npm install @kinotic/continuum-client
+npm install @mindignited/continuum-client
 # or
-pnpm add @kinotic/continuum-client
+pnpm add @mindignited/continuum-client
 # or
-yarn add @kinotic/continuum-client
+yarn add @mindignited/continuum-client
 ```
 
 ### Connecting to Continuum
@@ -27,7 +27,7 @@ yarn add @kinotic/continuum-client
 Before you can call services, you need to establish a connection to the Continuum server:
 
 ```typescript
-import { Continuum, ConnectionInfo, ConnectedInfo } from '@kinotic/continuum-client'
+import { Continuum, ConnectionInfo, ConnectedInfo } from '@mindignited/continuum-client'
 
 // Configure the connection
 const connectionInfo: ConnectionInfo = {
@@ -72,7 +72,7 @@ Create a typed service proxy class to call your services. The service name must 
 While you can use `IServiceProxy` directly, creating a typed service class provides better type safety and developer experience:
 
 ```typescript
-import { IServiceProxy, Continuum } from '@kinotic/continuum-client'
+import { IServiceProxy, Continuum } from '@mindignited/continuum-client'
 
 // Define domain types
 interface Category {
@@ -130,7 +130,7 @@ export const STORE_SERVICE: IStoreService = new StoreService()
 Once you've created your service proxy class, you can use it to call your service methods:
 
 ```typescript
-import { Continuum } from '@kinotic/continuum-client'
+import { Continuum } from '@mindignited/continuum-client'
 import { STORE_SERVICE } from './services/storeService'
 
 // First, connect to Continuum
@@ -188,7 +188,7 @@ For detailed Java client documentation, see the [Advanced Topics](./advanced) se
 
 Using Continuum services from clients is straightforward:
 
-1. **Install the client library** (`@kinotic/continuum-client`)
+1. **Install the client library** (`@mindignited/continuum-client`)
 2. **Connect** to the Continuum server using `Continuum.connect()`
 3. **Create a typed service proxy class** that wraps `Continuum.serviceProxy()`
 4. **Call methods** on your service proxy class

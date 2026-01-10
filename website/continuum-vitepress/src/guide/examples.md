@@ -61,9 +61,9 @@ Create a new Spring Boot application and add Continuum dependencies:
 ```gradle
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation "org.kinotic:continuum-core:${continuumVersion}"
-    implementation "org.kinotic:continuum-core-vertx:${continuumVersion}"
-    implementation "org.kinotic:continuum-gateway:${continuumVersion}"
+    implementation "org.mindignited:continuum-core:${continuumVersion}"
+    implementation "org.mindignited:continuum-core-vertx:${continuumVersion}"
+    implementation "org.mindignited:continuum-gateway:${continuumVersion}"
 }
 ```
 
@@ -154,7 +154,7 @@ public class DefaultTodoService implements TodoService {
 ### Step 5: Create TypeScript Client
 
 ```typescript
-import { IServiceProxy, Continuum } from '@kinotic/continuum-client'
+import { IServiceProxy, Continuum } from '@mindignited/continuum-client'
 
 export interface ITodoService {
     getAllTodos(): Promise<Todo[]>
@@ -200,7 +200,7 @@ export const TODO_SERVICE: ITodoService = new TodoService()
 ### Step 6: Connect and Use
 
 ```typescript
-import { Continuum } from '@kinotic/continuum-client'
+import { Continuum } from '@mindignited/continuum-client'
 import { TODO_SERVICE } from './services/todoService'
 
 // Connect
@@ -222,14 +222,14 @@ This tutorial shows how to integrate Continuum into a Vue.js frontend applicatio
 ### Step 1: Install Dependencies
 
 ```bash
-npm install @kinotic/continuum-client
+npm install @mindignited/continuum-client
 ```
 
 ### Step 2: Create Connection State
 
 ```typescript
 // stores/connection.ts
-import { ConnectedInfo, ConnectionInfo, Continuum } from '@kinotic/continuum-client'
+import { ConnectedInfo, ConnectionInfo, Continuum } from '@mindignited/continuum-client'
 import { reactive } from 'vue'
 
 export class ConnectionState {
@@ -254,7 +254,7 @@ export const connectionState = reactive(new ConnectionState())
 
 ```typescript
 // services/storeService.ts
-import { IServiceProxy, Continuum } from '@kinotic/continuum-client'
+import { IServiceProxy, Continuum } from '@mindignited/continuum-client'
 
 export class StoreService {
     protected serviceProxy: IServiceProxy

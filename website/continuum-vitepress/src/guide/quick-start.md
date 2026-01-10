@@ -27,9 +27,9 @@ Add Continuum dependencies to your `build.gradle` (or equivalent Maven dependenc
 
 ```gradle
 dependencies {
-    implementation "org.kinotic:continuum-core:${continuumVersion}"
-    implementation "org.kinotic:continuum-core-vertx:${continuumVersion}"
-    implementation "org.kinotic:continuum-gateway:${continuumVersion}"
+    implementation "org.mindignited:continuum-core:${continuumVersion}"
+    implementation "org.mindignited:continuum-core-vertx:${continuumVersion}"
+    implementation "org.mindignited:continuum-gateway:${continuumVersion}"
     // ... your other dependencies
 }
 ```
@@ -97,11 +97,11 @@ Standard Spring dependency injection works as normal. The framework handles all 
 Install the Continuum client library in your frontend project:
 
 ```bash
-npm install @kinotic/continuum-client
+npm install @mindignited/continuum-client
 # or
-pnpm add @kinotic/continuum-client
+pnpm add @mindignited/continuum-client
 # or
-yarn add @kinotic/continuum-client
+yarn add @mindignited/continuum-client
 ```
 
 ### Step 6: Connect and Call Your Service
@@ -109,7 +109,7 @@ yarn add @kinotic/continuum-client
 In your frontend code (Vue, React, etc.), connect to Continuum and create a service proxy:
 
 ```typescript
-import { Continuum, IServiceProxy } from '@kinotic/continuum-client'
+import { Continuum, IServiceProxy } from '@mindignited/continuum-client'
 
 // Connect to the backend
 const connectionInfo = {
@@ -177,7 +177,7 @@ This path is for developers building backend services with Node.js or Bun. The C
 ### Step 1: Set Up the Gateway Server
 
 ```bash
-docker run -p 58503:58503 kinotic/continuum-gateway-server:latest
+docker run -p 58503:58503 mindignited/continuum-gateway-server:latest
 ```
 
 The Gateway acts as a router, allowing your Node.js/Bun services and frontend clients to communicate through Continuum.
@@ -187,7 +187,7 @@ The Gateway acts as a router, allowing your Node.js/Bun services and frontend cl
 In your Node.js/Bun project, install the Continuum client:
 
 ```bash
-npm install @kinotic/continuum-client
+npm install @mindignited/continuum-client
 ```
 
 ### Step 3: Create and Publish Services

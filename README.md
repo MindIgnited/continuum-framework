@@ -1,5 +1,7 @@
 ![CI](https://github.com/kinotic-foundation/continuum-framework/actions/workflows/gradle-build.yml/badge.svg?branch=develop)
 
+[![javadoc](https://javadoc.io/badge2/org.mindignited/continuum-core/javadoc.svg)](https://javadoc.io/doc/org.mindignited/continuum-core)
+
 # The Continuum Framework
 
 The Continuum Framework is an open-source software framework developed by Mind Ignited to provide developers with a powerful set of tools to create high-performance software solutions quickly and efficiently.

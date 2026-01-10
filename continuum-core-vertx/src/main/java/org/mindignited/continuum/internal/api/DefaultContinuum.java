@@ -196,16 +196,6 @@ public class DefaultContinuum implements Continuum {
         info.append(igniteClusterProperties.toString());
 
         log.info(info.toString());
-
-        log.info("Testing add opens");
-
-        try {
-            Field field = SerializedLambda.class.getDeclaredField("capturingClass");
-            field.setAccessible(true);
-            log.info("Access successful");
-        } catch (Exception e) {
-            log.error("Access failed", e);
-        }
     }
 
     @Override

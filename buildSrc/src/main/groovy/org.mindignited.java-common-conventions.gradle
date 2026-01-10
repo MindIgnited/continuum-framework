@@ -79,7 +79,7 @@ dependencies {
     implementation 'io.opentelemetry:opentelemetry-api'
     implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations'
 
-    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
+    implementation 'jakarta.annotation:jakarta.annotation-api'
 
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.apache.commons:commons-text'

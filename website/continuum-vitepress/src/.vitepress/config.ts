@@ -85,7 +85,7 @@ function sidebarReference() {
     {
       text: 'API',
       items: [
-        { text: 'Javadoc', link: '/reference/javadoc' }
+        { text: 'Javadoc', link: 'https://www.javadoc.io/doc/org.mindignited/continuum-core' }
       ]
     }
   ]
