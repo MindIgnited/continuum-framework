@@ -38,10 +38,11 @@ export * from './api/security/ParticipantConstants'
 export * from './core/api/ContextInterceptor'
 export * from './core/api/CRI'
 export * from './core/api/DefaultCRI'
-export * from './core/api/EventBus'
+export * from './core/api/Event'
+export * from './core/api/EventConstants'
+export * from './core/api/IEvent'
 export * from './core/api/IEventBus'
 export * from './core/api/IServiceRegistry'
-export * from './core/api/ServiceRegistry'
 export * from './core/api/StreamData'
 
 export * from './core/api/crud/AbstractIterablePage'
@@ -55,3 +56,12 @@ export * from './core/api/crud/IterablePage'
 export * from './core/api/crud/Page'
 export * from './core/api/crud/Pageable'
 export * from './core/api/crud/Sort'
+
+
+/**
+ * Internal exports
+ * These are needed for advanced use cases and custom implementations
+ * Not recommended for general use
+ */
+export * from './internal/core/api/ServiceRegistry'
+export * from './internal/core/api/StompEventBus'

@@ -5,7 +5,9 @@
  */
 
 import { createCRI } from '@/core/api/CRI.js'
-import { EventConstants, IEvent, IEventBus } from '@/core/api/IEventBus.js'
+import {EventConstants} from '@/core/api/EventConstants.js'
+import {IEvent} from '@/core/api/IEvent.js'
+import { IEventBus } from '@/core/api/IEventBus.js'
 import { ServiceIdentifier } from '@/core/api/ServiceIdentifier.js'
 import { ArgumentResolver, JsonArgumentResolver } from './ArgumentResolver.js'
 import { EventUtil } from './EventUtil.js'

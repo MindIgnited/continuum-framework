@@ -1,6 +1,6 @@
 import {ConnectionInfo} from '@/api/ConnectionInfo'
 import {ConnectedInfo} from '@/api/security/ConnectedInfo'
-import {EventConstants} from '@/core/api/IEventBus'
+import {EventConstants} from '@/core/api/EventConstants.js'
 import {IFrame, RxStomp, RxStompConfig, StompHeaders} from '@stomp/rx-stomp'
 import {ReconnectionTimeMode} from '@stomp/stompjs'
 import {Subscription} from 'rxjs'

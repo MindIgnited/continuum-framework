@@ -5,7 +5,8 @@
  */
 
 
-import {EventConstants, IEvent} from '@/core/api/IEventBus.js'
+import {EventConstants} from '@/core/api/EventConstants.js'
+import {IEvent} from '@/core/api/IEvent.js'
 
 /**
  * Argument resolution utilities for service invocation.

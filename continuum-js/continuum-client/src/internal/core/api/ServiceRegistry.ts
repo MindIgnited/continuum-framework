@@ -4,21 +4,18 @@
  * See https://www.apache.org/licenses/LICENSE-2.0
  */
 
-import { ContinuumContextStack } from '@/api/Continuum'
-import { ServiceIdentifier } from './ServiceIdentifier.js'
+import {ContextInterceptor, ServiceContext} from '@/core/api/ContextInterceptor.js'
+import {Event} from '@/core/api/Event.js'
+import {EventConstants} from '@/core/api/EventConstants.js'
+import {IEvent} from '@/core/api/IEvent.js'
+import {IEventBus} from '@/core/api/IEventBus.js'
+import {IEventFactory, IServiceProxy, IServiceRegistry} from '@/core/api/IServiceRegistry.js'
+import {ServiceIdentifier} from '@/core/api/ServiceIdentifier.js'
 import { ServiceInvocationSupervisor } from '@/internal/core/api/ServiceInvocationSupervisor.js'
 import opentelemetry, { SpanKind, SpanStatusCode, Tracer } from '@opentelemetry/api'
-import {
-    ATTR_SERVER_ADDRESS,
-    ATTR_SERVER_PORT,
-} from '@opentelemetry/semantic-conventions'
 import { Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
-import info from '../../../package.json' assert { type: 'json' }
-import { Event } from './EventBus'
-import { EventConstants, IEvent, IEventBus } from './IEventBus'
-import { IEventFactory, IServiceProxy, IServiceRegistry } from './IServiceRegistry'
-import { ContextInterceptor, ServiceContext } from './ContextInterceptor'
+import info from '../../../../package.json' assert { type: 'json' }
 
 /**
  * An implementation of a {@link IEventFactory} which uses JSON content
@@ -190,21 +187,9 @@ class ServiceProxy implements IServiceProxy {
         let eventFactoryToUse = defaultEventFactory
         if (eventFactory) {
             eventFactoryToUse = eventFactory
-        } else if (ContinuumContextStack.getEventFactory()) {
-            eventFactoryToUse = ContinuumContextStack.getEventFactory()!
         }
 
         let eventBusToUse = this.serviceRegistry.eventBus
-        if (ContinuumContextStack.getContinuumInstance()) {
-            eventBusToUse = ContinuumContextStack.getContinuumInstance()!.eventBus
-        }
-
-        // store additional attribute if there is an active span
-        const span = opentelemetry.trace.getActiveSpan()
-        if (span) {
-            span.setAttribute(ATTR_SERVER_ADDRESS, eventBusToUse.serverInfo?.host || 'unknown')
-            span.setAttribute(ATTR_SERVER_PORT, eventBusToUse.serverInfo?.port || 'unknown')
-        }
 
         let event: IEvent = eventFactoryToUse.create(cri, args)
 

@@ -1,93 +1,33 @@
-/*
- *
- * Copyright 2008-2021 Kinotic and the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import {ConnectionInfo, ServerInfo} from '@/api/ConnectionInfo'
 import {ContinuumError} from '@/api/errors/ContinuumError'
 import {ConnectedInfo} from '@/api/security/ConnectedInfo'
-import {StompConnectionManager} from '@/core/api/StompConnectionManager'
+import {Event} from '@/core/api/Event.js'
+import {EventConstants} from '@/core/api/EventConstants.js'
+import {IEvent} from '@/core/api/IEvent.js'
+import {IEventBus} from '@/core/api/IEventBus.js'
+import {StompConnectionManager} from './StompConnectionManager'
 import {context, propagation} from '@opentelemetry/api';
 import {IFrame, IMessage} from '@stomp/rx-stomp'
 import {ConnectableObservable, firstValueFrom, Observable, Subject, Subscription, throwError, Unsubscribable} from 'rxjs'
 import {filter, map, multicast} from 'rxjs/operators'
-import {Optional} from 'typescript-optional'
 import {v4 as uuidv4} from 'uuid'
-import {EventConstants, IEvent, IEventBus} from './IEventBus'
+import opentelemetry from '@opentelemetry/api'
+import {
+    ATTR_SERVER_ADDRESS,
+    ATTR_SERVER_PORT,
+} from '@opentelemetry/semantic-conventions'
 
-/**
- * Default IEvent implementation
- */
-export class Event implements IEvent {
-
-    public cri: string
-    public headers: Map<string, string>
-    public data: Optional<Uint8Array>
-
-    constructor(cri: string,
-                headers?: Map<string, string>,
-                data?: Uint8Array) {
-
-        this.cri = cri
-
-        if (headers !== undefined) {
-            this.headers = headers
-        } else {
-            this.headers = new Map<string, string>()
-        }
-
-        this.data = Optional.ofNullable(data)
-    }
-
-    public getHeader(key: string): string | undefined {
-        return this.headers.get(key)
-    }
-
-    public hasHeader(key: string): boolean {
-        return this.headers.has(key)
-    }
-
-    public setHeader(key: string, value: string): void {
-        this.headers.set(key, value)
-    }
-
-    public removeHeader(key: string): boolean {
-        return this.headers.delete(key)
-    }
-
-    public setDataString(data: string): void {
-        const uint8Array = new TextEncoder().encode(data)
-        this.data = Optional.ofNonNull(uint8Array)
-    }
-
-    public getDataString(): string {
-        let ret = ''
-        this.data.ifPresent(( value ) => ret = new TextDecoder().decode(value))
-        return ret
-    }
-}
 
 interface Carrier {
     traceparent?: string;
     tracestate?: string;
 }
 
+
 /**
  * Default implementation of {@link IEventBus}
  */
-export class EventBus implements IEventBus {
+export class StompEventBus implements IEventBus {
 
     public fatalErrors: Observable<Error>
     public serverInfo: ServerInfo | null = null
@@ -116,7 +56,7 @@ export class EventBus implements IEventBus {
         }
     }
 
-    public isConnectionActive(): boolean{
+    public isActive(): boolean{
         return this.stompConnectionManager.active
     }
 
@@ -156,6 +96,14 @@ export class EventBus implements IEventBus {
 
     public send(event: IEvent): void {
         if(this.stompConnectionManager.rxStomp){
+
+            // store additional attribute if there is an active span
+            const span = opentelemetry.trace.getActiveSpan()
+            if (span) {
+                span.setAttribute(ATTR_SERVER_ADDRESS, this.serverInfo?.host || 'unknown')
+                span.setAttribute(ATTR_SERVER_PORT, this.serverInfo?.port || 'unknown')
+            }
+
             const headers: any = {}
 
             for (const [key, value] of event.headers.entries()) {
@@ -192,7 +140,7 @@ export class EventBus implements IEventBus {
 
                 if (this.requestRepliesObservable == null) {
                     this.requestRepliesSubject = new Subject<IEvent>()
-                    this.requestRepliesObservable = this._observe(this.replyToCri as string)
+                    this.requestRepliesObservable = this.observe(this.replyToCri as string)
                                                         .pipe(multicast(this.requestRepliesSubject)) as ConnectableObservable<IEvent>
                     this.requestRepliesSubscription = this.requestRepliesObservable.connect()
                 }
@@ -262,7 +210,28 @@ export class EventBus implements IEventBus {
     }
 
     public observe(cri: string): Observable<IEvent> {
-        return this._observe(cri)
+        if(this.stompConnectionManager?.rxStomp) {
+            return this.stompConnectionManager
+                       .rxStomp
+                       .watch(cri)
+                       .pipe(map<IMessage, IEvent>((message: IMessage): IEvent => {
+
+                           // We translate all IMessage objects to IEvent objects
+                           const headers: Map<string, string> = new Map<string, string>()
+                           let destination: string = ''
+                           for (const prop of Object.keys(message.headers)) {
+                               if (prop === 'destination') {
+                                   destination = message.headers[prop]
+                               }else{
+                                   headers.set(prop, message.headers[prop])
+                               }
+                           }
+
+                           return new Event(destination, headers, message.binaryBody)
+                       }))
+        }else{
+            return throwError(() => this.createSendUnavailableError())
+        }
     }
 
     private cleanup(): void{
@@ -299,36 +268,4 @@ export class EventBus implements IEventBus {
         return new Error(ret)
     }
 
-    /**
-     * This is internal impl of observe that creates a cold observable.
-     * The public variants transform this to some type of hot observable depending on the need
-     * @param cri to observe
-     * @return the cold {@link Observable<IEvent>} for the given destination
-     */
-    private _observe(cri: string): Observable<IEvent> {
-        if(this.stompConnectionManager?.rxStomp) {
-            return this.stompConnectionManager
-                       .rxStomp
-                       .watch(cri)
-                       .pipe(map<IMessage, IEvent>((message: IMessage): IEvent => {
-
-                           // We translate all IMessage objects to IEvent objects
-                           const headers: Map<string, string> = new Map<string, string>()
-                           let destination: string = ''
-                           for (const prop of Object.keys(message.headers)) {
-                               if (prop === 'destination') {
-                                   destination = message.headers[prop]
-                               }else{
-                                   headers.set(prop, message.headers[prop])
-                               }
-                           }
-
-                           return new Event(destination, headers, message.binaryBody)
-                       }))
-        }else{
-            return throwError(() => this.createSendUnavailableError())
-        }
-    }
-
 }
-

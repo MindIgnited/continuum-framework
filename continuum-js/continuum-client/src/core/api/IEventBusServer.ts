@@ -15,16 +15,18 @@
  * limitations under the License.
  */
 
+import {ServerInfo} from '@/api/ConnectionInfo'
 import {ContinuumError} from '@/api/errors/ContinuumError'
 import {IEvent} from '@/core/api/IEvent.js'
+import {IEventBus} from '@/core/api/IEventBus.js'
 import {Observable} from 'rxjs'
 
 /**
- * Part of the low level portion of continuum representing an event bus connection
+ * Part of the low level portion of continuum representing an event bus server.
  *
  * Created by Navid Mitchell on 2019-01-04.
  */
-export interface IEventBus {
+export interface IEventBusServer extends IEventBus{
 
     /**
      * Any errors emitted by this observable will be fatal and the connection will be closed.
@@ -33,11 +35,23 @@ export interface IEventBus {
     fatalErrors: Observable<ContinuumError>
 
     /**
-     * Determines if this event bus is active.
-     * This can mean different things for different implementations.
-     * But generally it means that the event bus is connected and able to send and receive events.
+     * Determines if the connection is active.
+     * This means {@link IEventBus#listen()} was called and was successful. There may or may not be active connections.
+     * @return true if the server is listening false if not
      */
     isActive(): boolean
+
+    /**
+     * Starts a local event bus server to listen for incoming connections
+     * NOTE: Not all implementations will support this
+     * @param serverInfo to listen on
+     */
+    listen(serverInfo: ServerInfo): Promise<void>
+
+    /**
+     * Stops the local event bus server from listening for incoming connections
+     */
+    stopListening(): Promise<void>
 
     /**
      * Creates a subscription for all {@link IEvent}'s for the given destination
@@ -46,7 +60,7 @@ export interface IEventBus {
     observe(cri: string): Observable<IEvent>
 
     /**
-     * Send a single {@link IEvent} to the connected server
+     * Send a single {@link IEvent}
      * @param event to send
      */
     send(event: IEvent): void

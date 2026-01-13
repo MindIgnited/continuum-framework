@@ -4,7 +4,8 @@
  * See https://www.apache.org/licenses/LICENSE-2.0
  */
 
-import {EventConstants, IEvent} from '@/core/api/IEventBus.js'
+import {EventConstants} from '@/core/api/EventConstants.js'
+import {IEvent} from '@/core/api/IEvent.js'
 import {EventUtil} from '@/internal/core/api/EventUtil.js'
 
 /**

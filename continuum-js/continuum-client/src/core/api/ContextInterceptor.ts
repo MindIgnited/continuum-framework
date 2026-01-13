@@ -4,7 +4,7 @@
  * See https://www.apache.org/licenses/LICENSE-2.0
  */
 
-import { IEvent } from './IEventBus.js'
+import {IEvent} from '@/core/api/IEvent.js'
 
 /**
  * Interface for the service context, extendable by users for type-safe context data.
