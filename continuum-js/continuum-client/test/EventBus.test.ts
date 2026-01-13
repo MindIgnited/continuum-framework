@@ -28,16 +28,16 @@ describe('Continuum RPC Tests', () => {
         toSend.setDataString('["Bob"]')
 
         let errorEncountered = new Promise<Error>((resolve, reject) => {
-            Continuum.eventBus.fatalErrors.subscribe((error: Error) => {
+            Continuum._eventBus.fatalErrors.subscribe((error: Error) => {
                 reject(error)
             })
         })
 
-        Continuum.eventBus.send(toSend)
+        Continuum._eventBus.send(toSend)
 
         await expect(errorEncountered).rejects.toThrowError('reply-to header invalid, scheme: null is not valid for service requests')
 
-        expect(Continuum.eventBus.isConnectionActive()).toBeFalsy()
+        expect(Continuum._eventBus.isConnectionActive()).toBeFalsy()
 
     })
 

@@ -24,7 +24,7 @@ import { CONTEXT_METADATA_KEY } from '@/api/ContinuumDecorators.js'
 export class ServiceInvocationSupervisor {
     private readonly log: Logger
     private active: boolean = false
-    private readonly eventBusService: IEventBus
+    private _eventBus: IEventBus
     private readonly interceptorProvider: () => ContextInterceptor<any> | null
     private readonly argumentResolver: ArgumentResolver
     private readonly returnValueConverter: ReturnValueConverter
@@ -46,12 +46,12 @@ export class ServiceInvocationSupervisor {
     ) {
         if (!serviceIdentifier) throw new Error("ServiceIdentifier must not be null")
         if (!serviceInstance) throw new Error("Service instance must not be null")
-        if (!eventBusService) throw new Error("EventBusService must not be null")
+        if (!eventBusService) throw new Error("IEventBus must not be null")
         if (!interceptorProvider) throw new Error("interceptorProvider must not be null")
 
         this.serviceIdentifier = serviceIdentifier
         this.serviceInstance = serviceInstance
-        this.eventBusService = eventBusService
+        this._eventBus = eventBusService
         this.interceptorProvider = interceptorProvider
 
         this.log = options.logger || createDebugLogger("continuum:ServiceInvocationSupervisor")
@@ -65,6 +65,21 @@ export class ServiceInvocationSupervisor {
         return this.active
     }
 
+    /**
+     * The {@link IEventBus} that this supervisor uses to listen for service invocation events
+     * This can be changed at runtime, the supervisor will restart to use the new event bus
+     * @param eventBus the new IEventBus to use
+     */
+    public set eventBus(eventBus: IEventBus) {
+        if (this.active) {
+            this.stop();
+            this._eventBus = eventBus;
+            this.start();
+        }else{
+            this._eventBus = eventBus;
+        }
+    }
+
     public start(): void {
         if (this.active) {
             throw new Error("Service already started")
@@ -72,7 +87,7 @@ export class ServiceInvocationSupervisor {
         this.active = true
 
         const criBase = this.serviceIdentifier.cri().baseResource()
-        this.methodSubscription = this.eventBusService
+        this.methodSubscription = this._eventBus
                                       .observe(criBase)
                                       .subscribe({
                                                      next: async (event: IEvent) => {
@@ -200,7 +215,7 @@ export class ServiceInvocationSupervisor {
 
     private processMethodInvocationResult(event: IEvent, result: any): void {
         const outgoingEvent = this.returnValueConverter.convert(event.headers, result)
-        this.eventBusService.send(outgoingEvent)
+        this._eventBus.send(outgoingEvent)
     }
 
     private handleException(event: IEvent, error: any): void {
@@ -212,7 +227,7 @@ export class ServiceInvocationSupervisor {
                     ]),
             new TextEncoder().encode(JSON.stringify({ message: error.message }))
         )
-        this.eventBusService.send(errorEvent)
+        this._eventBus.send(errorEvent)
     }
 
     private validateReplyTo(event: IEvent): boolean {

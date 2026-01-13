@@ -63,16 +63,28 @@ export class TextEventFactory implements IEventFactory {
  * The default implementation of {@link IServiceRegistry}
  */
 export class ServiceRegistry implements IServiceRegistry {
-    private readonly eventBus: IEventBus
-    private readonly supervisors: Map<string, ServiceInvocationSupervisor> = new Map()
+    private _eventBus: IEventBus
+    private supervisors: Map<string, ServiceInvocationSupervisor> = new Map()
     private contextInterceptor: ContextInterceptor<any> | null = null
 
     constructor(eventBus: IEventBus) {
-        this.eventBus = eventBus
+        this._eventBus = eventBus
+    }
+
+    public set eventBus(eventBus: IEventBus) {
+        this._eventBus = eventBus
+        // update all supervisors to use the new event bus
+        for (const supervisor of this.supervisors.values()) {
+            supervisor.eventBus = eventBus
+        }
+    }
+
+    public get eventBus(): IEventBus {
+        return this._eventBus
     }
 
     public serviceProxy(serviceIdentifier: string): IServiceProxy {
-        return new ServiceProxy(serviceIdentifier, this.eventBus)
+        return new ServiceProxy(serviceIdentifier, this)
     }
 
     public register(serviceIdentifier: ServiceIdentifier, service: any): void {
@@ -113,15 +125,15 @@ const defaultEventFactory: IEventFactory = new JsonEventFactory()
  */
 class ServiceProxy implements IServiceProxy {
     public readonly serviceIdentifier: string
-    private readonly eventBus: IEventBus
+    private readonly serviceRegistry: ServiceRegistry
     private tracer: Tracer
 
-    constructor(serviceIdentifier: string, eventBus: IEventBus) {
+    constructor(serviceIdentifier: string, serviceRegistry: ServiceRegistry) {
         if (typeof serviceIdentifier === 'undefined' || serviceIdentifier.length === 0) {
             throw new Error('The serviceIdentifier provided must contain a value')
         }
         this.serviceIdentifier = serviceIdentifier
-        this.eventBus = eventBus
+        this.serviceRegistry = serviceRegistry
         this.tracer = opentelemetry.trace.getTracer(
             'continuum.client',
             info.version
@@ -182,7 +194,7 @@ class ServiceProxy implements IServiceProxy {
             eventFactoryToUse = ContinuumContextStack.getEventFactory()!
         }
 
-        let eventBusToUse = this.eventBus
+        let eventBusToUse = this.serviceRegistry.eventBus
         if (ContinuumContextStack.getContinuumInstance()) {
             eventBusToUse = ContinuumContextStack.getContinuumInstance()!.eventBus
         }

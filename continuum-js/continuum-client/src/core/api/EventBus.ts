@@ -257,6 +257,10 @@ export class EventBus implements IEventBus {
         }
     }
 
+    public listen(_serverInfo: ServerInfo): Promise<void> {
+        return Promise.reject('Not implemented')
+    }
+
     public observe(cri: string): Observable<IEvent> {
         return this._observe(cri)
     }

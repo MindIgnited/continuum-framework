@@ -63,9 +63,9 @@ describe("Context Injection", () => {
     const sendAndReceiveEvent = async (cri: string, args?: any[] | null, headers?: Map<string, string>): Promise<any> => {
         const replyTo = `${EventConstants.SERVICE_DESTINATION_PREFIX}${replyToId}:${uuidv4()}@continuum.js.EventBus/replyHandler`
         const event = createTestEvent(cri, replyTo, args, headers)
-        const response: Observable<IEvent> = Continuum.eventBus.observe(replyTo)
+        const response: Observable<IEvent> = Continuum._eventBus.observe(replyTo)
         const resultPromise = firstValueFrom(response)
-        Continuum.eventBus.send(event)
+        Continuum._eventBus.send(event)
         const result = await resultPromise
         if (result.hasHeader(EventConstants.ERROR_HEADER)) {
             throw new Error(result.getHeader(EventConstants.ERROR_HEADER))

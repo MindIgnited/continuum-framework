@@ -141,6 +141,13 @@ export interface IEventBus {
     isConnectionActive(): boolean
 
     /**
+     * Starts a local event bus server to listen for incoming connections
+     * NOTE: Not all implementations will support this
+     * @param serverInfo to listen on
+     */
+    listen(serverInfo: ServerInfo): Promise<void>
+
+    /**
      * Creates a subscription for all {@link IEvent}'s for the given destination
      * @param cri to subscribe to
      */

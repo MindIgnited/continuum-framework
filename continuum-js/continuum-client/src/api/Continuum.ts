@@ -95,7 +95,7 @@ export class ContinuumSingleton {
     /**
      * The {@link IEventBus} that is used to communicate with the Continuum server
      */
-    public readonly eventBus!: IEventBus
+    private _eventBus!: IEventBus
     /**
      * The {@link ServiceRegistry} that is used to manage the services that are available
      */
@@ -106,9 +106,18 @@ export class ContinuumSingleton {
     public readonly crudServiceProxyFactory!: CrudServiceProxyFactory
 
     constructor() {
-        this.eventBus = new EventBus()
-        this.serviceRegistry = new ServiceRegistry(this.eventBus)
+        this._eventBus = new EventBus()
+        this.serviceRegistry = new ServiceRegistry(this._eventBus)
         this.crudServiceProxyFactory = new CrudServiceProxyFactory(this.serviceRegistry)
+    }
+
+    public get eventBus(): IEventBus {
+        return this._eventBus
+    }
+
+    public set eventBus(eventBus: IEventBus) {
+        this._eventBus = eventBus
+        this.serviceRegistry.eventBus = eventBus
     }
 
     /**
@@ -117,7 +126,7 @@ export class ContinuumSingleton {
      * @return Promise containing the result of the initial connection attempt
      */
      public connect(connectionInfo: ConnectionInfo): Promise<ConnectedInfo> {
-        return this.eventBus.connect(connectionInfo)
+        return this._eventBus.connect(connectionInfo)
     }
 
     /**
@@ -125,7 +134,7 @@ export class ContinuumSingleton {
      * This will clear any subscriptions and close the connection
      */
     public disconnect(force?: boolean): Promise<void> {
-        return this.eventBus.disconnect(force)
+        return this._eventBus.disconnect(force)
     }
 
     /**

@@ -77,20 +77,20 @@ describe('Continuum Client Tests', () => {
         validateConnectedInfo(connectedInfo, ['ANONYMOUS'])
 
         const promise = new Promise((resolve, reject) => {
-            continuum.eventBus.fatalErrors.subscribe((error: Error) => {
+            continuum._eventBus.fatalErrors.subscribe((error: Error) => {
                 resolve(error)
             })
         })
 
         console.log('Sending invalid event from continuum client')
-        continuum.eventBus.send(new Event(EventConstants.SERVICE_DESTINATION_PREFIX+ 'blah'))
+        continuum._eventBus.send(new Event(EventConstants.SERVICE_DESTINATION_PREFIX+ 'blah'))
 
         const error = await logFailure(promise, 'Failed to receive error from fatalErrors observable')
 
         expect(error).toBeDefined()
 
         // make sure client was automatically disconnected
-        expect(continuum.eventBus.isConnectionActive(),
+        expect(continuum._eventBus.isConnectionActive(),
             'Client to be disconnected').toBe(false)
 
         await expect(continuum.disconnect()).resolves.toBeUndefined()
