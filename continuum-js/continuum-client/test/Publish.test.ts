@@ -49,9 +49,9 @@ describe("Publish Mechanism", () => {
     const sendAndReceiveEvent = async (cri: string, args?: any[] | null): Promise<any> => {
         const replyTo = `${EventConstants.SERVICE_DESTINATION_PREFIX}${replyToId}:${uuidv4()}@continuum.js.EventBus/replyHandler`
         const event = createTestEvent(cri, replyTo, args)
-        const response: Observable<IEvent> = Continuum._eventBus.observe(replyTo)
+        const response: Observable<IEvent> = Continuum.eventBus.observe(replyTo)
         const resultPromise = firstValueFrom(response)
-        Continuum._eventBus.send(event)
+        Continuum.eventBus.send(event)
         const result = await resultPromise
         if (result.hasHeader(EventConstants.ERROR_HEADER)) {
             throw new Error(result.getHeader(EventConstants.ERROR_HEADER))

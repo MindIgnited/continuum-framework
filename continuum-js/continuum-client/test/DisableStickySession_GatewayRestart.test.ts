@@ -71,7 +71,7 @@ describe('Disable Sticky Session Gateway Restart Reconnection Tests', () => {
         console.log(`Continuum Gateway restarted`)
 
         // Connect again and make another RPC call
-        while(!continuum._eventBus.isConnected()){
+        while(!continuum.eventBus.isConnected()){
             await new Promise(resolve => setTimeout(resolve, 5000))
             console.log('Waiting for Continuum Gateway to restart...')
         }
