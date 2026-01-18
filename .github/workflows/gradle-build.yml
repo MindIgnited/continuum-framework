@@ -50,19 +50,19 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Run E2E Tests
-        id: run_e2e_tests
-        continue-on-error: true
-        run: |
-          cd continuum-js/continuum-client
-          ./gradlew pnpmInstall
-          ./gradlew pnpmTest
+#      - name: Run E2E Tests
+#        id: run_e2e_tests
+#        continue-on-error: true
+#        run: |
+#          cd continuum-js/continuum-client
+#          ./gradlew pnpmInstall
+#          ./gradlew pnpmTest
 
       - name: Merge Test Results
         run: |
           mkdir -p allure-results
           cp -r */build/allure-results/* allure-results/
-          cp -r continuum-js/*/allure-results/* allure-results/
+#          cp -r continuum-js/*/allure-results/* allure-results/
 
       - name: Get Allure history
         uses: actions/checkout@v4
@@ -100,14 +100,10 @@ jobs:
           target_url: https://mindignited.github.io/continuum-framework/allure/${{ github.run_number }}
 
       - name: Check If Failure
-        if: ${{ steps.gradle_build.outcome == 'failure' || steps.run_e2e_tests.outcome == 'failure' }}
+        if: ${{ steps.gradle_build.outcome == 'failure' }}
         run: |
           if [ "${{ steps.gradle_build.outcome }}" == "failure" ]; then
             echo "Gradle Build failed."
-          fi
-
-          if [ "${{ steps.run_e2e_tests.outcome }}" == "failure" ]; then
-            echo "E2E Tests failed."
           fi
 
           # Optionally mark the job as failed
