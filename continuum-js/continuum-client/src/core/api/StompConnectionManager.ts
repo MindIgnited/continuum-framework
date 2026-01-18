@@ -98,7 +98,13 @@ export class StompConnectionManager {
                     if(connectionInfo.disableStickySession){
                         connectHeadersInternal[EventConstants.DISABLE_STICKY_SESSION_HEADER] = 'true'
                     }
-                    connectHeadersInternal[EventConstants.REPLY_TO_ID_HEADER] = this.replyToId
+
+                    // use replyToId if provided in connectionInfo, otherwise set it
+                    if(connectHeadersInternal[EventConstants.REPLY_TO_ID_HEADER]){
+                        this.replyToId = connectHeadersInternal[EventConstants.REPLY_TO_ID_HEADER]
+                    }else{
+                        connectHeadersInternal[EventConstants.REPLY_TO_ID_HEADER] = this.replyToId
+                    }
 
                     // If max connections are set then make sure we have not exceeded that threshold
                     if(connectionInfo?.maxConnectionAttempts){
