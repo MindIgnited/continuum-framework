@@ -38,7 +38,7 @@ public class ContinuumGatewayProperties {
     public static String DEFAULT_REST_PATH = "/api";
     public static long DEFAULT_REST_BODY_LIMIT_SIZE = 2048;
 
-    private StompServerOptions stomp = new StompServerOptions();
+    private StompServerOptions stomp;
 
     private final ContinuumRestServerProperties rest = new ContinuumRestServerProperties();
 

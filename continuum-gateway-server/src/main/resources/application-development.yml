@@ -10,7 +10,7 @@ continuum:
 logging:
   level:
     org:
-      kinotic: TRACE
+      mindignited: TRACE
     io:
       vertx: DEBUG
 

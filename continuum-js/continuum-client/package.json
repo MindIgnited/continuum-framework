@@ -1,6 +1,6 @@
 {
   "name": "@mindignited/continuum-client",
-  "version": "3.0.0-beta.0",
+  "version": "3.0.0-beta.2",
   "author": "Mind Ignited <develop@mindignited.com>",
   "license": "Apache-2.0",
   "type": "module",

@@ -326,7 +326,7 @@ export class EventBus implements IEventBus {
                            return new Event(destination, headers, message.binaryBody)
                        }))
         }else{
-            return throwError(() => this.createSendUnavailableError())
+            throw this.createSendUnavailableError()
         }
     }
 

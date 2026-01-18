@@ -5,6 +5,7 @@
  */
 
 import { ContinuumContextStack } from '@/api/Continuum'
+import debug from 'debug'
 import { ServiceIdentifier } from './ServiceIdentifier.js'
 import { ServiceInvocationSupervisor } from '@/internal/core/api/ServiceInvocationSupervisor.js'
 import opentelemetry, { SpanKind, SpanStatusCode, Tracer } from '@opentelemetry/api'
@@ -66,6 +67,7 @@ export class ServiceRegistry implements IServiceRegistry {
     private _eventBus: IEventBus
     private supervisors: Map<string, ServiceInvocationSupervisor> = new Map()
     private contextInterceptor: ContextInterceptor<any> | null = null
+    private debugLogger = debug('continuum:serviceRegistry')
 
     constructor(eventBus: IEventBus) {
         this._eventBus = eventBus
@@ -90,6 +92,7 @@ export class ServiceRegistry implements IServiceRegistry {
     public register(serviceIdentifier: ServiceIdentifier, service: any): void {
         const criString = serviceIdentifier.cri().raw()
         if (!this.supervisors.has(criString)) {
+            this.debugLogger(`Registering service for CRI: ${criString}`)
             const supervisor = new ServiceInvocationSupervisor(
                 serviceIdentifier,
                 service,
@@ -105,6 +108,7 @@ export class ServiceRegistry implements IServiceRegistry {
         const criString = serviceIdentifier.cri().raw()
         const supervisor = this.supervisors.get(criString)
         if (supervisor) {
+            this.debugLogger(`Unregistering service for CRI: ${criString}`)
             supervisor.stop()
             this.supervisors.delete(criString)
         }
