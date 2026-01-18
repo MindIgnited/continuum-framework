@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: Getting Started
-      link: /guide/getting-started
+      link: /guide/quick-start
     - theme: alt
       text: View on GitHub
       link: https://github.com/MindIgnited/continuum-framework
