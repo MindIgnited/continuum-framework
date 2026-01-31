@@ -1,4 +1,4 @@
-name: Build and Deploy Continuum Website
+name: Build and Deploy Kinotic Website
 
 on:
   push:

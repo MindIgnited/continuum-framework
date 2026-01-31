@@ -36,6 +36,6 @@ public class SearchComparatorDeserializer extends ValueDeserializer<SearchCompar
 
         JsonNode node = jsonParser.objectReadContext().readTree(jsonParser);
 
-        return SearchComparator.fromStringValue(node.asString());
+        return SearchComparator.fromStringValue(node.stringValue());
     }
 }

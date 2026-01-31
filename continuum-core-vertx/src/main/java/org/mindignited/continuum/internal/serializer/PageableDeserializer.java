@@ -58,7 +58,7 @@ public class PageableDeserializer extends ValueDeserializer<Pageable> {
         boolean cursorPresent = false;
         if(node.has("cursor")){
             cursorPresent = true;
-            cursor = node.get("cursor").asString();
+            cursor = node.get("cursor").stringValue();
         }
 
         if(!cursorPresent && pageNumber == null){
@@ -81,13 +81,13 @@ public class PageableDeserializer extends ValueDeserializer<Pageable> {
         for(JsonNode node: ordersNode){
 
             Validate.isTrue(node.has("direction"), "direction missing from Order");
-            Direction direction = Direction.fromString(node.get("direction").asString());
+            Direction direction = Direction.fromString(node.get("direction").stringValue());
 
             Validate.isTrue(node.has("property"), "property missing from Order");
-            String property = node.get("property").asString();
+            String property = node.get("property").stringValue();
 
             if(node.has("nullHandling")){
-                NullHandling nullHandling = NullHandling.valueOf(node.get("nullHandling").asString());
+                NullHandling nullHandling = NullHandling.valueOf(node.get("nullHandling").stringValue());
                 ret.add(new Order(direction, property, nullHandling));
             }else {
                 ret.add(new Order(direction, property));
